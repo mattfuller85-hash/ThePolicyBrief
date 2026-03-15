@@ -4,7 +4,16 @@ on:
   schedule:
     # Run every 3 hours (UTC): 12am, 3am, 6am, 9am, 12pm, 3pm, 6pm, 9pm
     - cron: '0 */3 * * *'
-  workflow_dispatch: # Allow manual trigger from GitHub Actions UI
+  workflow_dispatch:
+    inputs:
+      force_reset:
+        description: 'Reset all known bills and reprocess from scratch?'
+        required: false
+        default: 'no'
+        type: choice
+        options:
+          - 'no'
+          - 'yes'
 
 env:
   GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
@@ -34,6 +43,8 @@ jobs:
       
       - name: Run Hourly Congress Check
         run: python hourly_check.py
+        env:
+          FORCE_RESET: ${{ github.event.inputs.force_reset || 'no' }}
       
       - name: Generate Thumbnails (if new audits were added)
         run: |

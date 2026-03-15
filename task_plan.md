@@ -56,3 +56,16 @@
 - [ ] **YouTube Integration**
   - [ ] Include interest group tags on the YouTube thumbnail overlay.
   - [ ] Add interest group tags to the YouTube description and tags metadata.
+
+## Phase 7: X/Twitter Auto-Posting & Cross-Promotion
+- [ ] **X Developer API Setup**
+  - [ ] Create X Developer account with Elevated access for posting.
+  - [ ] Add `X_API_KEY`, `X_API_SECRET`, `X_ACCESS_TOKEN`, `X_ACCESS_SECRET` to GitHub Secrets.
+- [ ] **Auto-Post Pipeline**
+  - [ ] After YouTube video is live and blog post is published, auto-generate an X/Twitter post.
+  - [ ] Post the **raw video natively to X** (not just a YouTube link) for maximum reach and monetization.
+  - [ ] Include a reply to the native post with the YouTube link for cross-promotion.
+  - [ ] Use `tweepy` or X API v2 directly for automated posting.
+- [ ] **Duplicate Prevention System**
+  - [ ] Track which bills have been posted to YouTube and X, similar to `known_bill_ids.json`.
+  - [ ] Prevent re-posting videos or tweets for bills that have already been published.

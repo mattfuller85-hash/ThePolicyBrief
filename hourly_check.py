@@ -70,6 +70,13 @@ def run_hourly_check():
         print("❌ GEMINI_API_KEY not set. Exiting.")
         return
 
+    # --- Force Reset Override ---
+    force_reset = os.getenv("FORCE_RESET", "no").lower() == "yes"
+    if force_reset:
+        print("🔄 FORCE RESET enabled! Clearing known bills and audit data...")
+        save_known_ids(set())
+        save_audits([])
+
     # --- Step 1: Fetch recent bills ---
     source = CongressSource(api_key=congress_key)
     bills = source.fetch_daily_bills(limit=20)
