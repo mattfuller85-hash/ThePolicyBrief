@@ -4,7 +4,7 @@ import audits from '../../data/daily_audits.json';
 import { marked } from 'marked';
 
 export function getStaticPaths() {
-  return audits.filter(audit => audit.youtube_url).map(audit => ({
+  return audits.map(audit => ({
     params: { id: audit.bill_id.toLowerCase() },
     props: { audit },
   }));
