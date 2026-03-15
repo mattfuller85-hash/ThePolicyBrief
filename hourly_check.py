@@ -19,6 +19,12 @@ KNOWN_IDS_PATH = os.path.join(DATA_DIR, "known_bill_ids.json")
 AUDITS_PATH = os.path.join(DATA_DIR, "daily_audits.json")
 TARGET_EMAIL = "mattfuller85@gmail.com"
 
+# Process at most this many bills per hourly run to stay within
+# Gemini free-tier rate limits. Remaining new bills will be
+# picked up by the next hourly run.
+MAX_BILLS_PER_RUN = 2
+PACING_SECONDS = 120  # 2 minutes between bills
+
 
 def load_known_ids() -> set:
     """Load the set of bill IDs that have already been processed."""
@@ -84,14 +90,19 @@ def run_hourly_check():
         print(f"✅ No new bills found. All {len(bills)} fetched bills already processed.")
         return
 
-    print(f"🆕 Found {len(new_bills)} new bill(s) to audit!")
+    # Cap to MAX_BILLS_PER_RUN per run; the rest will be caught next hour
+    bills_to_process = new_bills[:MAX_BILLS_PER_RUN]
+    remaining = len(new_bills) - len(bills_to_process)
+    print(f"🆕 Found {len(new_bills)} new bill(s). Processing {len(bills_to_process)} this run.")
+    if remaining > 0:
+        print(f"   ⏭️  {remaining} bill(s) deferred to next hourly run.")
 
     # --- Step 3: Audit each new bill ---
     auditor = FinancialAuditor(api_key=gemini_key)
     existing_audits = load_existing_audits()
     new_audits = []
 
-    for bill in new_bills:
+    for i, bill in enumerate(bills_to_process):
         bill_id = source.get_bill_id(bill)
         bill_title = bill.get("title", "Untitled Bill")
         congress_num = bill.get("congress", 119)
@@ -134,9 +145,10 @@ def run_hourly_check():
         new_audits.append(audit_result)
         known_ids.add(bill_id)
 
-        # Pace API requests (free-tier Gemini limit)
-        print(f"⏳ Pacing between bills...")
-        time.sleep(5)
+        # Pace between bills to respect Gemini free-tier rate limits
+        if i < len(bills_to_process) - 1:
+            print(f"⏳ Waiting {PACING_SECONDS}s before next bill (rate limit protection)...")
+            time.sleep(PACING_SECONDS)
 
     # --- Step 4: Send email notifications ---
     if resend_key and new_audits:
