@@ -9,7 +9,7 @@ import json
 import os
 import random
 import time
-from datetime import datetime
+from datetime import datetime, timezone
 from engine import CongressSource, FinancialAuditor, ResendDelivery, ANCHORS
 from dotenv import load_dotenv
 
@@ -121,7 +121,7 @@ def run_hourly_check():
         audit_result["anchor_name"] = anchor["name"]
         audit_result["title"] = bill_title
         audit_result["congress"] = congress_num
-        audit_result["processed_at"] = datetime.utcnow().isoformat() + "Z"
+        audit_result["processed_at"] = datetime.now(timezone.utc).isoformat()
 
         # Sponsor Dox
         sponsor_name = bill.get("sponsors", [{}])[0].get("name", None) if bill.get("sponsors") else None

@@ -11,6 +11,9 @@ env:
   RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
   CONGRESS_API_KEY: ${{ secrets.CONGRESS_API_KEY }}
 
+permissions:
+  contents: write
+
 jobs:
   check-and-audit:
     runs-on: ubuntu-latest
