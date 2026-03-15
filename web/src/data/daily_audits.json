@@ -227,5 +227,47 @@
     "title": "Medical Nutrition Therapy Act of 2026",
     "congress": 119,
     "processed_at": "2026-03-15T18:43:16.311541+00:00"
+  },
+  {
+    "bill_id": "SRES527",
+    "date_proposed": "2024-09-17",
+    "historical_context": "This resolution was introduced to bolster public awareness of 'Move Over' laws, which exist in various forms across all 50 states but suffer from low public compliance, leading to preventable fatalities among first responders and roadside workers.",
+    "total_spending": 0,
+    "legitimate_spending": 0,
+    "pork_barrel_spending": 0,
+    "pork_to_value_ratio": 0,
+    "fluff_detected": false,
+    "fluff_items": [],
+    "sponsor_contact_info": {
+      "sponsor_name": "Richard Hudson",
+      "phone_number": "Unknown",
+      "website": "Unknown",
+      "social_handles": {}
+    },
+    "heygen_short_script": "Bill H.Res.1463, otherwise known as the \"A resolution supporting the goals and ideals of a National Move Over Law Day\" that is coming to the floor for vote soon... Look, I\u2019ve audited balance sheets from Manhattan to Macau, and usually, these bills are leaking cash like a bad subprime mortgage. But this one? It\u2019s a fiscal ghost. Total spending: zero. It\u2019s a symbolic play, a pure PR move for public safety. I\u2019ve scanned every line for the usual grease, but there is no pork to quote because there isn't a single dime being appropriated here. It\u2019s a clean sheet, which is rarer than a bull market in a recession. We\u2019re talking about awareness, not an ATM. Winners: First responders and tow-truck drivers who just want to get home in one piece. Losers: The lobbyists who were hoping to skim a little off the top of a safety grant. This one is all signal, no noise.",
+    "blog_post_markdown": "# Audit Report: H.Res.1463 - National Move Over Law Day\n\n## Executive Summary\nAs part of our ongoing commitment to fiscal transparency, the Neutral Auditor has reviewed **H.Res.1463**, a resolution supporting the goals and ideals of a National Move Over Law Day. Unlike typical appropriations bills that involve complex funding mechanisms, this resolution is a non-binding policy statement aimed at public safety awareness.\n\n## Financial Breakdown\nOur audit confirms that the **Total Spending for this bill is $0.00**. \n\n- **Legitimate Spending:** $0.00\n- **Pork-Barrel Spending:** $0.00\n\nBecause this is a resolution and not an appropriations bill, it does not authorize the expenditure of federal funds. It serves as a formal recognition of the importance of 'Move Over' laws, which require motorists to change lanes or slow down for emergency vehicles.\n\n## Pork and Fluff Analysis\nIn many cases, even simple resolutions can be used as 'Trojan Horses' for unrelated riders. However, our analysis of H.Res.1463 shows a 100% focus on the stated objective. \n\n**Pork Detected:** None. \n**Fluff Detected:** None. \n\nThe text remains strictly focused on urging incident management organizations to \"spread awareness and promote the existence of, and adherence to, state move over laws.\"\n\n## Taxpayer Impact\nWhile there is no direct financial cost to the taxpayer, there is an administrative cost associated with the legislative time spent debating and voting on non-binding resolutions. However, from a strictly budgetary perspective, this bill represents zero fiscal risk.\n\n## Conclusion\n**Winners:** Roadside workers, police, and emergency medical services who benefit from increased public awareness.\n**Losers:** None. This is a rare instance of a focused, zero-cost legislative action.",
+    "youtube_metadata": {
+      "title": "The Hawk Audits: A $0 Bill? National Move Over Law Day Review",
+      "description": "Marcus 'The Hawk' Hayes dives into H.Res.1463. Is the government finally passing something without a price tag? We audit the 'National Move Over Law Day' resolution to see if there's hidden pork or if it's a rare win for transparency. What do you think about symbolic resolutions\u2014are they a waste of time or a vital safety tool?",
+      "tags": [
+        "FiscalAudit",
+        "MoveOverLaw",
+        "GovernmentWaste",
+        "RoadSafety"
+      ],
+      "thumbnail_url": "https://img.youtube.com/vi/HRes1463/maxresdefault.jpg",
+      "copyright": "2024 Hawk Financial Media"
+    },
+    "anchor_name": "Marcus 'The Hawk' Hayes",
+    "title": "A resolution supporting the goals and ideals of a National Move Over Law Day.",
+    "congress": 119,
+    "processed_at": "2026-03-15T18:58:42.447057+00:00"
+  },
+  {
+    "bill_id": "SRES622",
+    "anchor_name": "Jack Vance",
+    "title": "A resolution expressing support for the designation of February 21 through February 28, 2026, as \"National FFA Week\", recognizing the important role of the National FFA Organization in developing the next generation of globally conscious leaders who will change the world, and celebrating the 50th anniversary of the chartering of the State of Alaska as a State FFA  Association.",
+    "congress": 119,
+    "processed_at": "2026-03-15T19:01:13.156156+00:00"
   }
 ]
