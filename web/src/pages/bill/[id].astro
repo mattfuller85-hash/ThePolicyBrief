@@ -16,6 +16,7 @@ const { audit } = Astro.props;
 const blogPostHtml = marked.parse(audit.blog_post_markdown || '');
 
 const formatMoney = (amount) => {
+	if (amount == null) return '$0';
 	if (amount >= 1_000_000_000) return `$${(amount / 1_000_000_000).toFixed(1)}B`;
 	if (amount >= 1_000_000) return `$${(amount / 1_000_000).toFixed(1)}M`;
 	return `$${amount.toLocaleString()}`;
