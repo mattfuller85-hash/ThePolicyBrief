@@ -95,13 +95,13 @@ class CongressSource:
         self.api_key = api_key
         self.base_url = "https://api.congress.gov/v3"
 
-    def fetch_daily_bills(self, limit: int = 5) -> List[Dict[str, Any]]:
-        """Fetch bills introduced or updated today."""
+    def fetch_daily_bills(self, limit: int = 20) -> List[Dict[str, Any]]:
+        """Fetch bills recently introduced or updated from the current Congress."""
         print(f"Fetching {limit} recent bills from Congress.gov...")
-        url = f"{self.base_url}/bill/118?api_key={self.api_key}&limit={limit}"
+        url = f"{self.base_url}/bill/119?api_key={self.api_key}&limit={limit}&sort=updateDate+desc"
         
         try:
-            import requests # Lazy import for now
+            import requests
             response = requests.get(url)
             response.raise_for_status()
             
@@ -111,6 +111,32 @@ class CongressSource:
         except Exception as e:
             print(f"❌ Error fetching from Congress API: {e}")
             return []
+
+    def fetch_bill_summary(self, congress: int, bill_type: str, bill_number: int) -> Optional[str]:
+        """Fetch the summary text for a specific bill. Returns summary text or None."""
+        url = (
+            f"{self.base_url}/bill/{congress}/{bill_type.lower()}/{bill_number}"
+            f"/summaries?api_key={self.api_key}"
+        )
+        try:
+            import requests
+            response = requests.get(url)
+            response.raise_for_status()
+            data = response.json()
+            summaries = data.get("summaries", [])
+            if summaries:
+                # Return the most recent summary text (strip HTML tags)
+                import re
+                raw = summaries[-1].get("text", "")
+                return re.sub(r"<[^>]+>", "", raw).strip()
+            return None
+        except Exception as e:
+            print(f"❌ Error fetching bill summary: {e}")
+            return None
+
+    def get_bill_id(self, bill: Dict[str, Any]) -> str:
+        """Generate a unique bill ID string from a Congress API bill object."""
+        return f"{bill.get('type', 'UNK')}{bill.get('number', 0)}"
 
 class FinancialAuditor:
     """The Investigative Radar: V7 Standard for zero-hallucination financial auditing."""

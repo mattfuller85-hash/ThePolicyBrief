@@ -1,10 +1,9 @@
-name: Daily Pipeline (3:00 AM CST)
+name: Hourly Congress Check
 
 on:
   schedule:
-    # 3:00 AM CST = 8:00 AM UTC (CST is UTC-6)
-    # During CDT (daylight saving), 3:00 AM CDT = 8:00 AM UTC
-    - cron: '0 8 * * *'
+    # Run every hour on the hour (UTC)
+    - cron: '0 * * * *'
   workflow_dispatch: # Allow manual trigger from GitHub Actions UI
 
 env:
@@ -13,7 +12,7 @@ env:
   CONGRESS_API_KEY: ${{ secrets.CONGRESS_API_KEY }}
 
 jobs:
-  audit-and-publish:
+  check-and-audit:
     runs-on: ubuntu-latest
     
     steps:
@@ -30,25 +29,23 @@ jobs:
       - name: Install Python dependencies
         run: pip install -r requirements.txt
       
-      - name: Run Daily Pipeline (Fetch, Audit, Email)
-        run: python pipeline.py
+      - name: Run Hourly Congress Check
+        run: python hourly_check.py
       
-      - name: Run YouTube Crawler (Backwash Effect)
-        run: python crawler.py
-        env:
-          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
-          YOUTUBE_CHANNEL_ID: ${{ secrets.YOUTUBE_CHANNEL_ID }}
-      
-      - name: Generate Thumbnails
+      - name: Generate Thumbnails (if new audits were added)
         run: |
           python -c "
-          import json
+          import json, os
           from thumbnail import ThumbnailGenerator
           gen = ThumbnailGenerator()
-          with open('web/src/data/daily_audits.json') as f:
-              audits = json.load(f)
-          for audit in audits:
-              gen.generate_thumbnail(audit)
+          data_path = 'web/src/data/daily_audits.json'
+          if os.path.exists(data_path):
+              with open(data_path) as f:
+                  audits = json.load(f)
+              for audit in audits:
+                  gen.generate_thumbnail(audit)
+          else:
+              print('No audit data to generate thumbnails for.')
           "
       
       - name: Commit updated data & thumbnails
@@ -56,5 +53,5 @@ jobs:
           git config user.name "The Policy Brief Bot"
           git config user.email "bot@thepolicybrief.com"
           git add web/src/data/ web/public/thumbnails/
-          git diff --staged --quiet || git commit -m "🤖 Daily audit data update $(date +%Y-%m-%d)"
+          git diff --staged --quiet || git commit -m "🤖 Hourly audit update $(date +%Y-%m-%d-%H%M)"
           git push
