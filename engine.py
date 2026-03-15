@@ -374,7 +374,6 @@ class FinancialAuditor:
                 prompt=prompt,
                 config=self.types.GenerateContentConfig(
                     temperature=0.0,
-                    tools=[{"google_search": {}}],
                 ),
             )
             # Search grounding sometimes returns markdown code blocks
