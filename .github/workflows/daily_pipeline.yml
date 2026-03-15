@@ -2,8 +2,8 @@ name: Hourly Congress Check
 
 on:
   schedule:
-    # Run every hour on the hour (UTC)
-    - cron: '0 * * * *'
+    # Run every 3 hours (UTC): 12am, 3am, 6am, 9am, 12pm, 3pm, 6pm, 9pm
+    - cron: '0 */3 * * *'
   workflow_dispatch: # Allow manual trigger from GitHub Actions UI
 
 env:

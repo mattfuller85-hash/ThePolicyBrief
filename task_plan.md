@@ -43,3 +43,16 @@
 - [ ] Generate GitHub Action for the 3:00 AM Daily Run.
 - [ ] Generate GitHub Action for the Friday Newsletter Blast.
 - [ ] Deploy Astro Web Hub to Vercel.
+
+## Phase 6: Tagging, Filtering & Discoverability
+- [ ] **Interest Group / Industry Tags**
+  - [ ] Have Gemini identify affected industries/interest groups during the audit and output them as tags (e.g., "Healthcare", "Defense", "Education", "Agriculture").
+  - [ ] Store tags in the audit JSON alongside each bill.
+  - [ ] Display tags on each blog post as clickable earmarks/badges.
+  - [ ] Add tag-based filtering to the Web Hub (filter posts by one or more interest groups).
+- [ ] **Sponsor Filtering**
+  - [ ] Add sponsor-based filtering to the Web Hub (filter posts by one or more sponsors).
+  - [ ] Support combined filtering: by sponsor AND/OR interest group tags simultaneously.
+- [ ] **YouTube Integration**
+  - [ ] Include interest group tags on the YouTube thumbnail overlay.
+  - [ ] Add interest group tags to the YouTube description and tags metadata.

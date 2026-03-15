@@ -19,10 +19,10 @@ KNOWN_IDS_PATH = os.path.join(DATA_DIR, "known_bill_ids.json")
 AUDITS_PATH = os.path.join(DATA_DIR, "daily_audits.json")
 TARGET_EMAIL = "mattfuller85@gmail.com"
 
-# Process at most this many bills per hourly run to stay within
-# Gemini free-tier rate limits. Remaining new bills will be
-# picked up by the next hourly run.
-MAX_BILLS_PER_RUN = 2
+# Process at most this many bills per 3-hour run to stay within
+# Gemini free-tier rate limits (15 RPM). 3 bills × 3 calls each = 9 calls.
+# Remaining new bills will be picked up by the next run.
+MAX_BILLS_PER_RUN = 3
 PACING_SECONDS = 120  # 2 minutes between bills
 
 
