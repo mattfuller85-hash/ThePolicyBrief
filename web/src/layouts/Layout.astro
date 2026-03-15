@@ -1,0 +1,104 @@
+---
+import '../styles/global.css';
+
+interface Props {
+	title: string;
+	activePath?: string;
+}
+
+const { title, activePath = '/' } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en" class="dark">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="description" content="The Policy Brief - Intelligence Dashboard" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<!-- Fonts -->
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Montserrat:wght@100..900&display=swap" rel="stylesheet">
+		<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+		<meta name="generator" content={Astro.generator} />
+		<title>{title} | The Policy Brief</title>
+	</head>
+	<body class="bg-background-dark font-display text-slate-100 selection:bg-accent-gold/30 antialiased overflow-hidden h-screen flex flex-col">
+		<!-- Top Navigation Bar -->
+		<header class="flex items-center justify-between border-b border-primary/50 bg-primary dark:bg-background-dark/95 px-6 py-3 z-50">
+			<div class="flex items-center gap-8">
+				<div class="flex items-center gap-4 text-slate-100">
+					<a href="/" class="flex items-center gap-4">
+						<div class="h-8 w-auto">
+							<img class="h-full object-contain" alt="The Policy Brief Logo Design" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCMk3UGndWwKQqjDKCxCs_ykJuWwboCow7L4k7Bed0lN8CiMfmkvICY62ScUb5cBK-hjvTLICscY-J3-p36YZjDI4PPD0odpQNLInIIVz9V-IfAYql0Tbqainn-jxPV-23FaseCwnWhV_YeIukIbs3cE4jexRxtGD6FLl0bbojhHtiDjTCAZHnc4Sifxl0T02x6OXrtTassQzu_RWzGyTMEo7vE9IhK7wlFBUVct4__abqy6b4RtDqSOiOY7deZWV38-EFSr-t96SbO"/>
+						</div>
+						<h2 class="font-header text-lg font-black uppercase tracking-widest hidden md:block">The Policy Brief</h2>
+					</a>
+				</div>
+				<nav class="hidden lg:flex items-center gap-6">
+					<a href="/" class={`text-xs font-bold uppercase tracking-tighter transition-colors ${activePath === '/' ? 'text-slate-100 border-b-2 border-accent-gold pb-1' : 'text-slate-400 hover:text-accent-gold'}`}>Intelligence</a>
+					<a href="/bills" class={`text-xs font-bold uppercase tracking-tighter transition-colors ${activePath.startsWith('/bill') ? 'text-slate-100 border-b-2 border-accent-gold pb-1' : 'text-slate-400 hover:text-accent-gold'}`}>Active Bills</a>
+					<a href="/pork-watch" class={`text-xs font-bold uppercase tracking-tighter transition-colors ${activePath === '/pork-watch' ? 'text-slate-100 border-b-2 border-accent-gold pb-1' : 'text-slate-400 hover:text-accent-gold'}`}>Pork Watch</a>
+					<a href="/archive" class={`text-xs font-bold uppercase tracking-tighter transition-colors ${activePath === '/archive' ? 'text-slate-100 border-b-2 border-accent-gold pb-1' : 'text-slate-400 hover:text-accent-gold'}`}>Archive</a>
+				</nav>
+			</div>
+			<div class="flex items-center gap-4">
+				<div class="relative hidden sm:block">
+					<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">search</span>
+					<input type="text" class="bg-primary/40 border-slate-700 text-xs py-2 pl-9 pr-4 rounded focus:ring-accent-gold focus:border-accent-gold w-48 text-slate-300 placeholder:text-slate-500" placeholder="SEARCH DOSSIER..."/>
+				</div>
+				<div class="flex gap-2">
+					<button class="p-2 rounded hover:bg-white/10 transition-colors text-slate-300">
+						<span class="material-symbols-outlined">notifications</span>
+					</button>
+					<div class="h-8 w-8 rounded bg-accent-gold/20 flex items-center justify-center border border-accent-gold/50 cursor-pointer hover:bg-accent-gold/30 transition-colors">
+						<span class="material-symbols-outlined text-accent-gold">security</span>
+					</div>
+				</div>
+			</div>
+		</header>
+		
+		<main class="flex-1 flex overflow-hidden flex-col">
+			<slot />
+			<!-- Footer Section -->
+			<footer class="mt-auto border-t border-slate-800 bg-background-dark/95 px-6 lg:px-10 py-4 shrink-0 z-50 w-full relative">
+				<div class="max-w-[1600px] mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+					<div class="flex items-center gap-6">
+						<div class="flex items-center gap-3">
+							<img alt="Footer Logo" class="opacity-50 grayscale h-5 w-auto mix-blend-screen" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCMk3UGndWwKQqjDKCxCs_ykJuWwboCow7L4k7Bed0lN8CiMfmkvICY62ScUb5cBK-hjvTLICscY-J3-p36YZjDI4PPD0odpQNLInIIVz9V-IfAYql0Tbqainn-jxPV-23FaseCwnWhV_YeIukIbs3cE4jexRxtGD6FLl0bbojhHtiDjTCAZHnc4Sifxl0T02x6OXrtTassQzu_RWzGyTMEo7vE9IhK7wlFBUVct4__abqy6b4RtDqSOiOY7deZWV38-EFSr-t96SbO"/>
+							<h2 class="text-xs font-black text-slate-400 uppercase tracking-widest italic font-header hidden sm:block">The Policy Brief</h2>
+						</div>
+						<div class="hidden md:flex gap-4 text-[10px] font-black uppercase tracking-widest text-slate-500">
+							<a href="#" class="hover:text-accent-gold transition-colors">Intelligence</a>
+							<a href="#" class="hover:text-accent-gold transition-colors">Security</a>
+						</div>
+					</div>
+					<div class="flex flex-col md:flex-row items-center gap-4 mb-16 lg:mb-0">
+						<p class="text-[9px] font-bold text-slate-600 uppercase tracking-widest">© 2024 THE POLICY BRIEF | CLEARANCE: PUBLIC ACCESS</p>
+						<div class="flex gap-2 hidden lg:flex">
+							<span class="text-[9px] font-bold text-slate-600 uppercase border border-slate-700 px-1.5 py-0.5 rounded">Core: 8.4.1</span>
+							<span class="text-[9px] font-bold text-slate-600 uppercase border border-slate-700 px-1.5 py-0.5 rounded">IP: 192.168.1.104</span>
+						</div>
+					</div>
+				</div>
+			</footer>
+		</main>
+
+		<!-- Mobile Navigation (Bottom) -->
+		<div class="lg:hidden fixed bottom-0 left-0 right-0 glass-panel border-t border-slate-700 px-6 py-3 flex justify-around z-50">
+			<a href="/" class={`flex flex-col items-center gap-1 ${activePath === '/' ? 'text-accent-gold' : 'text-slate-500'}`}>
+				<span class="material-symbols-outlined">analytics</span>
+				<span class="text-[9px] font-bold uppercase tracking-widest">Analysis</span>
+			</a>
+			<a href="/bills" class={`flex flex-col items-center gap-1 ${activePath.startsWith('/bill') ? 'text-accent-gold' : 'text-slate-500'}`}>
+				<span class="material-symbols-outlined">description</span>
+				<span class="text-[9px] font-bold uppercase tracking-widest">Source</span>
+			</a>
+			<a href="/share" class={`flex flex-col items-center gap-1 ${activePath === '/share' ? 'text-accent-gold' : 'text-slate-500'}`}>
+				<span class="material-symbols-outlined">share</span>
+				<span class="text-[9px] font-bold uppercase tracking-widest">Share</span>
+			</a>
+		</div>
+	</body>
+</html>

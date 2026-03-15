@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&amp;family=Montserrat:wght@100..900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#001f3d",
+                        "accent-gold": "#D4AF37",
+                        "alert-red": "#FF4C4C",
+                        "background-light": "#f5f7f8",
+                        "background-dark": "#0f1923",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"],
+                        "header": ["Montserrat", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+                },
+            },
+        }
+    </script>
+<style>
+        .glass-panel {
+            background: rgba(15, 25, 35, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .pork-glow {
+            box-shadow: 0 0 15px rgba(255, 76, 76, 0.3);
+            border: 1px solid #FF4C4C;
+        }
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #20364b;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 antialiased overflow-hidden h-screen flex flex-col">
+<!-- Top Navigation Bar -->
+<header class="flex items-center justify-between border-b border-primary/50 bg-primary dark:bg-background-dark/95 px-6 py-3 z-50">
+<div class="flex items-center gap-8">
+<div class="flex items-center gap-4 text-slate-100">
+<div class="h-8 w-auto">
+<img class="h-full object-contain" data-alt="The Policy Brief Logo Design" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCMk3UGndWwKQqjDKCxCs_ykJuWwboCow7L4k7Bed0lN8CiMfmkvICY62ScUb5cBK-hjvTLICscY-J3-p36YZjDI4PPD0odpQNLInIIVz9V-IfAYql0Tbqainn-jxPV-23FaseCwnWhV_YeIukIbs3cE4jexRxtGD6FLl0bbojhHtiDjTCAZHnc4Sifxl0T02x6OXrtTassQzu_RWzGyTMEo7vE9IhK7wlFBUVct4__abqy6b4RtDqSOiOY7deZWV38-EFSr-t96SbO"/>
+</div>
+<h2 class="font-header text-lg font-black uppercase tracking-widest hidden md:block">The Policy Brief</h2>
+</div>
+<nav class="hidden lg:flex items-center gap-6">
+<a class="text-slate-400 hover:text-accent-gold text-xs font-bold uppercase tracking-tighter transition-colors" href="#">Intelligence</a>
+<a class="text-slate-100 border-b-2 border-accent-gold pb-1 text-xs font-bold uppercase tracking-tighter" href="#">Active Bills</a>
+<a class="text-slate-400 hover:text-accent-gold text-xs font-bold uppercase tracking-tighter transition-colors" href="#">Pork Watch</a>
+<a class="text-slate-400 hover:text-accent-gold text-xs font-bold uppercase tracking-tighter transition-colors" href="#">Archive</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<div class="relative hidden sm:block">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">search</span>
+<input class="bg-primary/40 border-slate-700 text-xs py-2 pl-9 pr-4 rounded focus:ring-accent-gold focus:border-accent-gold w-48" placeholder="SEARCH DOSSIER..."/>
+</div>
+<div class="flex gap-2">
+<button class="p-2 rounded hover:bg-white/10 transition-colors text-slate-300">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<div class="h-8 w-8 rounded bg-accent-gold/20 flex items-center justify-center border border-accent-gold/50">
+<span class="material-symbols-outlined text-accent-gold">security</span>
+</div>
+</div>
+</div>
+</header>
+<main class="flex-1 flex overflow-hidden">
+<!-- Left Side: Analysis -->
+<section class="w-full lg:w-3/5 overflow-y-auto p-6 md:p-10 space-y-12">
+<!-- Breadcrumbs -->
+<nav class="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-slate-500">
+<a class="hover:text-accent-gold" href="#">Congressional Record</a>
+<span class="material-symbols-outlined text-[10px]">chevron_right</span>
+<span class="text-accent-gold">H.R. 4567</span>
+</nav>
+<!-- Title Section -->
+<div class="space-y-4">
+<h1 class="font-header text-4xl md:text-5xl font-black uppercase leading-none tracking-tight text-white">
+                    H.R. 4567: The Green Energy <span class="text-accent-gold">Infrastructure Act</span>
+</h1>
+<div class="flex flex-wrap items-center gap-4 pt-2">
+<span class="px-2 py-1 bg-primary text-slate-300 text-[10px] font-black uppercase tracking-widest border border-slate-700">Classified: Grade A</span>
+<span class="px-2 py-1 bg-green-900/30 text-green-400 text-[10px] font-black uppercase tracking-widest border border-green-800">Status: Active Floor Debate</span>
+<span class="text-slate-500 text-[10px] font-bold uppercase tracking-widest">Updated: 2h ago</span>
+</div>
+</div>
+<!-- ELI5 Summary -->
+<div class="space-y-4 border-l-2 border-primary pl-6">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-accent-gold">lightbulb</span>
+<h3 class="font-header text-sm font-black uppercase tracking-widest text-accent-gold">ELI5 Summary</h3>
+</div>
+<p class="text-slate-400 leading-relaxed text-lg italic">
+                    "Think of this as a massive credit card for the planet. The government wants to borrow billions to build solar farms and wind turbines across the country. While it sounds good for the environment, the fine print contains massive handouts to specific industries and hidden taxes on traditional energy users."
+                </p>
+</div>
+<!-- The Pork Report -->
+<div class="pork-glow rounded-lg bg-alert-red/5 p-6 space-y-4 overflow-hidden relative">
+<div class="absolute top-0 right-0">
+<div class="bg-alert-red text-white text-[10px] font-black px-4 py-1 uppercase tracking-widest rotate-0 md:rotate-12 translate-x-2 -translate-y-1">
+                        PORK DETECTED
+                    </div>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-alert-red">report_problem</span>
+<h3 class="font-header text-sm font-black uppercase tracking-widest text-alert-red">The Pork Report</h3>
+</div>
+<ul class="space-y-3">
+<li class="flex justify-between items-center border-b border-alert-red/20 pb-2">
+<span class="text-sm font-bold text-slate-200">"$15M 'Eco-Garden' Subsidy"</span>
+<span class="text-xs font-mono text-alert-red">Sec. 402(b)</span>
+</li>
+<li class="flex justify-between items-center border-b border-alert-red/20 pb-2">
+<span class="text-sm font-bold text-slate-200">"$4.2M Virtual Reality Training for Park Rangers"</span>
+<span class="text-xs font-mono text-alert-red">Sec. 891(f)</span>
+</li>
+<li class="flex justify-between items-center border-b border-alert-red/20 pb-2">
+<span class="text-sm font-bold text-slate-200">"Private Jet Sustainable Fuel Rebate"</span>
+<span class="text-xs font-mono text-alert-red">Amd. 14</span>
+</li>
+</ul>
+</div>
+<!-- Economic Impact -->
+<div class="space-y-6">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-accent-gold">equalizer</span>
+<h3 class="font-header text-sm font-black uppercase tracking-widest text-white">Winners &amp; Losers</h3>
+</div>
+<div class="overflow-hidden border border-slate-800 rounded">
+<table class="w-full text-left">
+<thead class="bg-primary/50 text-[10px] font-black uppercase tracking-widest text-slate-400">
+<tr>
+<th class="px-4 py-3">Stakeholder</th>
+<th class="px-4 py-3">Projected Impact</th>
+<th class="px-4 py-3">Influence Score</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-slate-800 text-sm">
+<tr class="bg-green-500/5">
+<td class="px-4 py-4 font-bold text-slate-100">Mega-Utility Corps</td>
+<td class="px-4 py-4 text-green-400">+$12B Infrastructure Grants</td>
+<td class="px-4 py-4">
+<div class="flex gap-1">
+<div class="h-1.5 w-6 bg-accent-gold"></div>
+<div class="h-1.5 w-6 bg-accent-gold"></div>
+<div class="h-1.5 w-6 bg-accent-gold"></div>
+</div>
+</td>
+</tr>
+<tr class="bg-red-500/5">
+<td class="px-4 py-4 font-bold text-slate-100">Middle Class Taxpayers</td>
+<td class="px-4 py-4 text-alert-red">0.8% Surcharge on Energy Bills</td>
+<td class="px-4 py-4">
+<div class="flex gap-1">
+<div class="h-1.5 w-6 bg-slate-700"></div>
+<div class="h-1.5 w-6 bg-slate-700"></div>
+<div class="h-1.5 w-6 bg-slate-700"></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- Sponsor Accountability -->
+<div class="space-y-6 pb-20">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-accent-gold">person</span>
+<h3 class="font-header text-sm font-black uppercase tracking-widest text-white">Lead Sponsor Dossier</h3>
+</div>
+<div class="flex flex-col md:flex-row gap-6 p-6 bg-primary/20 border border-slate-800 rounded-lg">
+<div class="w-24 h-24 bg-center bg-cover rounded border-2 border-accent-gold grayscale hover:grayscale-0 transition-all" data-alt="Official Portrait of Lead Bill Sponsor" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAbLtCbgK23MzdM2oES8zcNC4PDQwKdUnBuTmBPhYb995YmTRiFi68V3uAUtbDq1_rx5_unc1NaLWxSNqj7RGrLmxKyQPOyERis7AAiwXE8hZFm70CSbFE5VIJrXSblWa0QUkwFSebdtvEuuR-p9lb9r8TDejKM_pFF0AjrSDb1f4unM816-HEXm4ULACB-vEMdPEcfRR2s1KrNTft2L2nsG1BXZeBBemXVmXihCWXEI6360tXs0yNiW_qoHAqoTvJ4AC2mAAKxjV4E')"></div>
+<div class="flex-1 space-y-4">
+<div>
+<h4 class="text-xl font-bold text-white uppercase font-header">Hon. Elias Thorne</h4>
+<p class="text-xs text-accent-gold font-bold uppercase tracking-widest">Chairman, Energy &amp; Resources</p>
+</div>
+<div class="flex gap-4">
+<a class="p-2 bg-background-dark border border-slate-700 rounded hover:border-accent-gold transition-colors" href="#">
+<span class="material-symbols-outlined text-sm">call</span>
+</a>
+<a class="p-2 bg-background-dark border border-slate-700 rounded hover:border-accent-gold transition-colors" href="#">
+<span class="material-symbols-outlined text-sm">language</span>
+</a>
+<a class="p-2 bg-background-dark border border-slate-700 rounded hover:border-accent-gold transition-colors" href="#">
+<span class="material-symbols-outlined text-sm">share</span>
+</a>
+<a class="p-2 bg-background-dark border border-slate-700 rounded hover:border-accent-gold transition-colors" href="#">
+<span class="material-symbols-outlined text-sm">rss_feed</span>
+</a>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Right Side: Source Text -->
+<aside class="hidden lg:flex w-2/5 flex-col bg-background-dark border-l border-primary/50 p-6 relative">
+<div class="flex items-center justify-between mb-6">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-slate-500">article</span>
+<h3 class="font-header text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">The Source (Official Text)</h3>
+</div>
+<button class="flex items-center gap-1 px-3 py-1 bg-primary text-[10px] font-bold uppercase tracking-widest text-slate-300 border border-slate-700">
+<span class="material-symbols-outlined text-xs">download</span> PDF
+                </button>
+</div>
+<!-- Stylized PDF Container -->
+<div class="flex-1 glass-panel rounded-lg overflow-y-auto p-8 font-serif text-slate-300 text-sm leading-loose shadow-2xl relative">
+<div class="absolute inset-0 pointer-events-none opacity-5 flex items-center justify-center">
+<div class="text-6xl font-black rotate-45 border-8 border-slate-100 p-8">UNCLASSIFIED</div>
+</div>
+<div class="max-w-prose mx-auto space-y-8">
+<div class="text-center border-b border-slate-700 pb-8 space-y-2">
+<p class="font-bold text-lg">118TH CONGRESS</p>
+<p class="text-xs italic">1st Session</p>
+<p class="font-black text-2xl tracking-tighter">H. R. 4567</p>
+<p class="text-[10px] pt-4">IN THE HOUSE OF REPRESENTATIVES</p>
+</div>
+<p class="font-bold uppercase text-center text-xs tracking-widest">A BILL</p>
+<p class="italic text-center">To provide for the transformation of national energy infrastructure, and for other purposes.</p>
+<div class="space-y-6">
+<p><span class="font-bold uppercase mr-2">Section 1. Short Title.</span> This Act may be cited as the “Green Energy Infrastructure Act of 2024”.</p>
+<div class="space-y-4">
+<p><span class="font-bold uppercase mr-2">Section 2. Findings.</span> The Congress finds the following:</p>
+<div class="pl-6 space-y-4">
+<p>(1) Domestic energy production must transition to renewable resources to ensure long-term national security.</p>
+<p>(2) Current electrical grids are insufficient to handle the load of projected electric vehicle adoption by 2030.</p>
+</div>
+</div>
+<div class="space-y-4 p-4 bg-alert-red/5 border border-dashed border-alert-red/30 rounded">
+<p><span class="font-bold uppercase mr-2 text-alert-red">Section 402. Urban Beautification.</span></p>
+<p class="text-slate-400">(b) SUBSIDIES FOR COMMUNITY GARDENS.—The Secretary shall establish a grant program for the development of sustainable eco-gardens in urban corridors, allocating not less than $15,000,000 for fiscal year 2024.</p>
+</div>
+<div class="space-y-4">
+<p><span class="font-bold uppercase mr-2">Section 403. Grid Modernization.</span></p>
+<p>Funds appropriated under this subsection shall be prioritized for utility companies demonstrating a minimum of 40% renewable portfolio standard compliance.</p>
+</div>
+<div class="space-y-4">
+<p><span class="font-bold uppercase mr-2">Section 891. Workforce Training.</span></p>
+<p>(f) VIRTUAL REALITY SIMULATION.—The National Park Service is authorized to implement digital twinning technology for staff training in wilderness management protocols.</p>
+</div>
+<p class="text-center text-slate-600 font-mono text-[10px] py-10">--- END OF TRANSMISSION ---</p>
+</div>
+</div>
+</div>
+<!-- Footer/Scanline effect -->
+<div class="mt-4 flex items-center justify-between text-[10px] font-mono text-slate-600">
+<span>DOC_ID: HR4567_FINAL_REV3</span>
+<span>SHA-256: 8f3a...c9d2</span>
+</div>
+</aside>
+</main>
+<!-- Mobile Navigation (Bottom) -->
+<div class="lg:hidden fixed bottom-0 left-0 right-0 glass-panel border-t border-slate-700 px-6 py-3 flex justify-around">
+<button class="flex flex-col items-center gap-1 text-accent-gold">
+<span class="material-symbols-outlined">analytics</span>
+<span class="text-[9px] font-bold uppercase tracking-widest">Analysis</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-slate-500">
+<span class="material-symbols-outlined">description</span>
+<span class="text-[9px] font-bold uppercase tracking-widest">Source</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-slate-500">
+<span class="material-symbols-outlined">share</span>
+<span class="text-[9px] font-bold uppercase tracking-widest">Share</span>
+</button>
+</div>
+</body></html>

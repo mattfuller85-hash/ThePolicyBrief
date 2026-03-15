@@ -1,0 +1,45 @@
+# The Policy Brief - Task Plan & Roadmap
+
+## Phase 1: The North Star (Blueprint)
+- [ ] **The Investigative Radar (Daily Audit)**
+  - [ ] Fetch daily bills, voting records, and sponsor info using a combination of Congress.gov, ProPublica, and GovTrack APIs.
+  - [ ] Financial Auditor: Itemize dollar amounts, classify spending as "Legitimate" or "Pork-Barrel", and identify "Fluff" (unrelated riders/earmarks).
+  - [ ] Sponsor Dox: Use the OpenSecrets API to map the "money trail" (top donors/industries) to the bill's sponsors, supplemented by Google Search grounding for contact info.
+- [ ] **The Content Factory (Tiered Video & Imagery)**
+  - [ ] The Digital Desktop (Google Docs Delivery): Auto-create a new Google Doc every morning containing HeyGen scripts, shorts scripts, and YouTube metadata.
+  - [ ] Adaptive Thumbnail & Blog Image Engine: Use AI (Imagen/Gemini) to generate high-quality thematic visuals for the right side of the image. Use Python (PIL/Pillow) to apply the "Master Template".
+    - `fluff_detected == true`: Overlay "PORK ALERT" in high-contrast red/yellow branding alongside the Bill ID.
+    - `fluff_detected == false`: Overlay "BILL BRIEF" or "LEGISLATIVE UPDATE" in neutral brand colors alongside the Bill ID.
+- [ ] **The Web Hub (Astro/Next.js)**
+  - [ ] Auto-rebuild when JSON files are committed to GitHub.
+  - [ ] Bento Dashboard: Display "Total Daily Spending" and the "Wall of Shame" (Weekly Pork Leaderboard).
+  - [ ] Visual-First Layout: Every post features the AI-generated adaptive thumbnail as the header.
+- [ ] **The Weekly Briefing (Newsletter)**
+  - [ ] Automated Friday script to aggregate the top 5 "Pork-Filled" bills and send a responsive HTML newsletter via Resend.
+
+## Phase 2: The "Link" Phase (Integrations)
+- [ ] Map environment variables:
+  - `CONGRESS_API_KEY`
+  - `PROPUBLICA_API_KEY`
+  - `OPENSECRETS_API_KEY`
+  - `GEMINI_API_KEY`
+  - `YOUTUBE_API_KEY`
+  - `RESEND_API_KEY`
+  - `GOOGLE_DRIVE_CREDENTIALS`
+
+## Phase 3: The "Architect" Phase (Core Logic)
+- [ ] `engine.py`: Build modular classes for `CongressSource`, `FinancialAuditor` (V7 Investigative Auditor Standards with CoVe 2-pass Verification and strict determinism), `ThumbnailGenerator` (with conditional text logic), `GoogleDocDelivery`, and `ResendMessenger`.
+- [ ] Incorporate comprehensive Sponsor Doxing (Phone, Website, Socials) via Google Search Grounding.
+- [ ] `crawler.py`: Build automated YouTube URL mapping logic for the "Backwash" effect.
+
+## Phase 4: The "Stylize" Phase (Aesthetics)
+- [ ] Web Hub: High-contrast, authoritative "Financial War Room" style.
+- [ ] Thumbnail Template: Consistent 70/30 split.
+- [ ] Dynamic Overlay: Branding changes from "Pork Alert" (Red) to "Official Brief" (Blue/Gold) based on audit findings.
+- [ ] Brand Voice: Unapologetic, transparent, and objective. "The People's Money."
+
+## Phase 5: Deploy (The "Trigger" Phase)
+- [ ] Initialize Git repository and push to GitHub.
+- [ ] Generate GitHub Action for the 3:00 AM Daily Run.
+- [ ] Generate GitHub Action for the Friday Newsletter Blast.
+- [ ] Deploy Astro Web Hub to Vercel.

@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>The Policy Brief | Intelligence Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#001f3d",
+                        "accent-gold": "#d4af37",
+                        "background-light": "#f5f7f8",
+                        "background-dark": "#0f1923",
+                    },
+                    fontFamily: {
+                        "display": ["Inter"]
+                    },
+                    borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .sidebar-gradient {
+            background: linear-gradient(180deg, rgba(0,31,61,1) 0%, rgba(15,25,35,1) 100%);
+        }
+        .gold-border {
+            border-left: 2px solid #d4af37;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 font-display">
+<div class="relative flex min-h-screen w-full flex-col overflow-x-hidden">
+<!-- Header Section -->
+<header class="sticky top-0 z-50 w-full border-b border-slate-800 bg-background-dark/95 backdrop-blur px-6 lg:px-20 py-4 flex items-center justify-between">
+<div class="flex items-center gap-10">
+<div class="flex items-center gap-3">
+<img alt="The Policy Brief Logo" class="h-10 w-10" data-alt="Official government intelligence style circular emblem logo" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDd__hbpbCnppOqagz74DxtbLNEkjMgnRHu6T_Z5waJTjVSPmMLr-rqYSytjnxTbLhslQB2XKhsqg3feEJK3JfUzjH2oj7Dlh7kp3F4V8qU0ekpO3g3-SLaiMnOzHZUurRt6LL2h4m9gQhUoKF5msmQToeRwsg-h_TqsmRSiBynRLY4iLa7PYbLcSmtBDFq3C_R-KdCnX9SaLf5qm7SL9NVb9NftAcYTAn-611gOPX8pQVWfKtJUJxF1jRIj6TAW1uwYbhFuo4h7fOb"/>
+<h1 class="text-xl font-bold tracking-tight text-white uppercase italic">The Policy Brief</h1>
+</div>
+<nav class="hidden md:flex items-center gap-8">
+<a class="text-sm font-semibold text-slate-400 hover:text-accent-gold transition-colors" href="#">Pork Report</a>
+<a class="text-sm font-semibold text-slate-400 hover:text-accent-gold transition-colors" href="#">Winners &amp; Losers</a>
+<a class="text-sm font-semibold text-slate-400 hover:text-accent-gold transition-colors" href="#">Accountability</a>
+</nav>
+</div>
+<div class="flex items-center gap-6">
+<div class="relative hidden sm:block">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-sm">search</span>
+<input class="bg-primary/30 border border-slate-700 rounded-lg pl-10 pr-4 py-2 text-sm focus:ring-1 focus:ring-accent-gold focus:border-accent-gold w-64 text-white" placeholder="Search Intelligence..." type="text"/>
+</div>
+<button class="bg-primary hover:bg-primary/80 text-white text-xs font-bold uppercase tracking-widest px-6 py-2.5 rounded border border-accent-gold/50 flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">lock</span>
+                    Agent Login
+                </button>
+</div>
+</header>
+<main class="flex-1 flex flex-col lg:flex-row max-w-[1600px] mx-auto w-full p-6 lg:p-10 gap-10">
+<!-- Main Content Area -->
+<div class="flex-1 flex flex-col gap-10">
+<!-- Bento Grid Metrics -->
+<section class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div class="bg-primary/20 border border-slate-800 p-8 rounded-xl relative overflow-hidden group">
+<div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+<span class="material-symbols-outlined text-8xl">payments</span>
+</div>
+<h3 class="text-slate-400 text-sm font-bold uppercase tracking-wider mb-4">Total Proposed Spending Today</h3>
+<div class="flex items-end gap-4">
+<span class="text-5xl font-bold text-white tracking-tighter">$4.2B</span>
+<span class="text-emerald-500 font-bold mb-1 flex items-center">
+<span class="material-symbols-outlined text-sm">trending_up</span>
+                                0.5%
+                            </span>
+</div>
+<p class="text-slate-500 text-xs mt-4 italic">Updated 2 minutes ago from Federal Treasury Feed</p>
+</div>
+<div class="bg-primary/20 border border-slate-800 p-8 rounded-xl relative overflow-hidden group">
+<div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+<span class="material-symbols-outlined text-8xl">error</span>
+</div>
+<h3 class="text-slate-400 text-sm font-bold uppercase tracking-wider mb-4">Active Pork Alerts</h3>
+<div class="flex items-end gap-4">
+<span class="text-5xl font-bold text-white tracking-tighter">128</span>
+<span class="bg-red-500/20 text-red-500 border border-red-500/50 px-2 py-0.5 rounded text-[10px] font-bold uppercase mb-2 tracking-widest">Critical Priority</span>
+</div>
+<p class="text-slate-500 text-xs mt-4 italic">Anomalous spending patterns detected in 14 districts</p>
+</div>
+</section>
+<!-- Latest Investigations -->
+<section>
+<div class="flex items-center justify-between mb-8 border-b border-slate-800 pb-4">
+<h2 class="text-2xl font-bold text-white flex items-center gap-3 italic uppercase tracking-tighter">
+<span class="w-2 h-8 bg-accent-gold"></span>
+                            Latest Investigations
+                        </h2>
+<a class="text-accent-gold text-xs font-bold uppercase tracking-widest hover:underline flex items-center gap-1" href="#">
+                            Archives <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</a>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+<!-- Investigation Card 1 -->
+<div class="group cursor-pointer">
+<div class="relative aspect-video rounded-xl overflow-hidden mb-4 border border-slate-800">
+<img alt="Construction project" class="object-cover w-full h-full transition-transform duration-500 group-hover:scale-110" data-alt="Aerial view of an unfinished highway bridge in a remote forest" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDCLkLsIQ4c75ORO0evJAyMlSH1vERg_vkm03nW8qQt55qcE3tWsqUu31MrdLgF59lubCUfv5AUSaA6mW4nOz3q4Qhx1qN4z5xhA8A3dZATlkiagX9ZsFINKjEZSM_ut92HhrhIztRqpcLuJuiF95M-Pg6Evd7oQTBSZYQGCF3D0las1sbI0PwXTyGdC-weQbam3hOQ3OWn18AZsoag1YzVllN0tyFzlnk4gyOO-BQ4dJI6TRc6oHs0xPDGa_HwoogXAeFY_9lgGQe0"/>
+<div class="absolute top-4 left-4 flex gap-2">
+<span class="bg-primary/80 backdrop-blur text-white text-[10px] font-bold px-2 py-1 rounded uppercase border border-slate-700">Infrastructure</span>
+</div>
+</div>
+<div class="flex justify-between items-start mb-2">
+<h4 class="text-lg font-bold text-slate-100 group-hover:text-accent-gold transition-colors">The Ghost Bridge Project</h4>
+<span class="text-slate-500 text-[10px] font-bold uppercase">6 min read</span>
+</div>
+<p class="text-slate-400 text-sm leading-relaxed">A $450M bridge connecting two uninhabited islands. We trace the lobbying efforts back to a shell company in Delaware.</p>
+</div>
+<!-- Investigation Card 2 -->
+<div class="group cursor-pointer">
+<div class="relative aspect-video rounded-xl overflow-hidden mb-4 border border-slate-800">
+<img alt="Defense Audit" class="object-cover w-full h-full transition-transform duration-500 group-hover:scale-110" data-alt="A dark boardroom with glowing blue screens and financial charts" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDGtArHy1y4MgmQxix8r8bj5V30zI5Rms5mkk9efDLcI0CpsgiuY0oYRq4P1QyNueLAGSnbPVRrqxp__f5LNScwkus-aqcLss9FDCGrnCkvPQVDUWIbEiqAp_MJbShBOAl_oJkodpbOUo0lggFxPWz1wSq7kjwy1nc3o_vXy-nr9_HwJJguW1RVvvGYioNhPCvSMSpjF8YzxIEoId6USbQKVeIO-B8laCx9OspEJ5A6o4eZigmr_-l8zQKcZ33-JYNjO9HJRgD2s8ks"/>
+<div class="absolute top-4 left-4 flex gap-2">
+<span class="bg-primary/80 backdrop-blur text-white text-[10px] font-bold px-2 py-1 rounded uppercase border border-slate-700">Politics</span>
+</div>
+</div>
+<div class="flex justify-between items-start mb-2">
+<h4 class="text-lg font-bold text-slate-100 group-hover:text-accent-gold transition-colors">Defense Procurement Audit</h4>
+<span class="text-slate-500 text-[10px] font-bold uppercase">12 min read</span>
+</div>
+<p class="text-slate-400 text-sm leading-relaxed">Internal memos reveal systemic overcharging for tactical gear. The trail leads directly to the Appropriations Committee.</p>
+</div>
+<!-- Investigation Card 3 -->
+<div class="group cursor-pointer">
+<div class="relative aspect-video rounded-xl overflow-hidden mb-4 border border-slate-800">
+<img alt="Urban Transit" class="object-cover w-full h-full transition-transform duration-500 group-hover:scale-110" data-alt="A blurred high-speed train passing through a modern terminal" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBGEVmfT4QjjmuRiIiJcrOVEMqrO7znsh78XRxOlMiBfrVvT6f2oSdBrIZASiV4lGG4_2iEI9IyV0Qc_AYsXBcXLd285dv1j8dGyjpkC2Q4uOe4CrRW9GJUH7VhGV9d-jT2uXZES_w-y3bK0blno6Z4tpdcJB8Q6FeKfTeX_hmZ020LSc5t3nvljk2lAAUV1kJdonUh4ai_U6yY_fqHsCWKRSDQsRS73FFzurbsjIlPT698MiztExgBV8GN9JI71QdDOihTCE3CqHKN"/>
+<div class="absolute top-4 left-4 flex gap-2">
+<span class="bg-primary/80 backdrop-blur text-white text-[10px] font-bold px-2 py-1 rounded uppercase border border-slate-700">Economy</span>
+</div>
+</div>
+<div class="flex justify-between items-start mb-2">
+<h4 class="text-lg font-bold text-slate-100 group-hover:text-accent-gold transition-colors">Urban Transit Waste</h4>
+<span class="text-slate-500 text-[10px] font-bold uppercase">8 min read</span>
+</div>
+<p class="text-slate-400 text-sm leading-relaxed">Analyzing the $2B overrun on the Central Line expansion. Where did the 'Emergency Contingency' fund really go?</p>
+</div>
+<!-- Investigation Card 4 -->
+<div class="group cursor-pointer">
+<div class="relative aspect-video rounded-xl overflow-hidden mb-4 border border-slate-800">
+<img alt="Energy" class="object-cover w-full h-full transition-transform duration-500 group-hover:scale-110" data-alt="High voltage power lines at dusk with a deep orange sky" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBtgatP49NLH_-N3X5xyq9PfamzMhPE19bbwGgLppnVL7mbDhVEOi8fEo7RzCMjITbQ1TNLLjA15BXtxiXI5nzlwvzZ0ieaCPEK38fGS8NKhxCM4FWUIq_lRu7OWJB_zu1b3Fj-dBJptzfsYy2nsAXL3DyGsFVzne4sg0LL8gV6WRE5KWJ-uIdBdDMFpVm-I37rOPBIySygNS_tE2kXIaQxcIj3y1m4BQfGJSYPRiujGT1bGIDLxzyDM5iAEVJaBqJrcBRNF8FW7STu"/>
+<div class="absolute top-4 left-4 flex gap-2">
+<span class="bg-primary/80 backdrop-blur text-white text-[10px] font-bold px-2 py-1 rounded uppercase border border-slate-700">Technology</span>
+</div>
+</div>
+<div class="flex justify-between items-start mb-2">
+<h4 class="text-lg font-bold text-slate-100 group-hover:text-accent-gold transition-colors">Energy Subsidy Loophole</h4>
+<span class="text-slate-500 text-[10px] font-bold uppercase">15 min read</span>
+</div>
+<p class="text-slate-400 text-sm leading-relaxed">How private utility companies are gaming the 'Green Innovation' tax credits to fund aging coal infrastructure.</p>
+</div>
+</div>
+</section>
+</div>
+<!-- Sidebar -->
+<aside class="w-full lg:w-80 flex flex-col gap-10">
+<!-- Industry Winners List -->
+<div class="bg-primary/10 border border-slate-800 p-6 rounded-xl">
+<h3 class="text-white text-xs font-black uppercase tracking-[0.2em] mb-6 flex items-center gap-2">
+<span class="material-symbols-outlined text-accent-gold text-lg">monitoring</span>
+                        Industry Winners
+                    </h3>
+<div class="space-y-4">
+<div class="gold-border pl-4">
+<p class="text-xs text-slate-500 font-bold uppercase">Energy Sector</p>
+<p class="text-lg font-bold text-white">+$1.2B</p>
+<p class="text-[10px] text-emerald-500 font-bold uppercase">+12% Surplus</p>
+</div>
+<div class="gold-border pl-4">
+<p class="text-xs text-slate-500 font-bold uppercase">Defense Tech</p>
+<p class="text-lg font-bold text-white">+$840M</p>
+<p class="text-[10px] text-emerald-500 font-bold uppercase">+8.4% Variance</p>
+</div>
+<div class="gold-border pl-4">
+<p class="text-xs text-slate-500 font-bold uppercase">Pharma Corp</p>
+<p class="text-lg font-bold text-white">+$2.1B</p>
+<p class="text-[10px] text-emerald-500 font-bold uppercase">+15.2% Profitability</p>
+</div>
+<div class="gold-border pl-4">
+<p class="text-xs text-slate-500 font-bold uppercase">Cyber Security</p>
+<p class="text-lg font-bold text-white">+$560M</p>
+<p class="text-[10px] text-emerald-500 font-bold uppercase">+5.0% Growth</p>
+</div>
+</div>
+</div>
+<!-- Newsletter Signup -->
+<div class="bg-accent-gold p-6 rounded-xl text-primary">
+<h3 class="text-sm font-black uppercase tracking-widest mb-2 flex items-center gap-2">
+<span class="material-symbols-outlined">mail</span>
+                        Money Trail
+                    </h3>
+<p class="text-xs font-bold leading-tight mb-4">Subscribe to receive classified spending alerts and investigative leaks directly.</p>
+<div class="space-y-2">
+<input class="w-full bg-white/20 border-primary/20 rounded-lg text-xs placeholder:text-primary/50 border-none focus:ring-1 focus:ring-primary" placeholder="agent@brief.gov" type="email"/>
+<button class="w-full bg-primary text-white text-[10px] font-black uppercase tracking-[0.2em] py-3 rounded-lg hover:bg-primary/90 transition-colors">
+                            Initialize Briefing
+                        </button>
+</div>
+</div>
+<!-- Status Indicators -->
+<div class="bg-background-dark border border-slate-800 p-4 rounded-xl">
+<div class="flex items-center justify-between text-[10px] font-bold text-slate-500 uppercase tracking-tighter mb-2">
+<span>Connection Status</span>
+<span class="text-emerald-500 flex items-center gap-1">
+<span class="size-1.5 bg-emerald-500 rounded-full animate-pulse"></span>
+                            Encrypted
+                        </span>
+</div>
+<div class="flex items-center justify-between text-[10px] font-bold text-slate-500 uppercase tracking-tighter">
+<span>Database Sync</span>
+<span class="text-white">Live Feed</span>
+</div>
+</div>
+</aside>
+</main>
+<!-- Footer Section -->
+<footer class="mt-auto border-t border-slate-800 bg-background-dark px-10 py-12">
+<div class="max-w-[1600px] mx-auto grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
+<div class="col-span-1 md:col-span-2">
+<div class="flex items-center gap-3 mb-4">
+<img alt="Footer Logo" class="opacity-50 grayscale" data-alt="Small circular agency crest logo" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA3UDkuA6DH5bUgIg1CMUu141rmtWVD6zN0acP2cKqTq3OWMEysgKJpG9TEA9407MVrf18XWuoKiG4pZxDkDzQuh3CKc0RMBSjQkd1VLnKY95rhD-hG2tLjw_1NSgtyKwdsDo7D5vAXyCuStrLCZcMC4xNsVxbUL5xciQSkeyz9Y6MV-oCzvn1JUDRMu-bZ5VU7xvj54OxZAx6LTTmfznW_8pDCbzbIojD08agkxXmctNYQjgB4_Teu3tzqbQwozDC3plslZZc_3YrN"/>
+<h2 class="text-sm font-black text-slate-400 uppercase tracking-widest italic">The Policy Brief</h2>
+</div>
+<p class="text-xs text-slate-500 leading-relaxed max-w-md">
+                        The Policy Brief is an independent investigative intelligence agency dedicated to total financial transparency. Our mission is to monitor federal spending, expose legislative inefficiencies, and hold public institutions accountable to the taxpayers they serve. Operating under the principles of radical transparency and forensic auditing.
+                    </p>
+</div>
+<div>
+<h4 class="text-[10px] font-black text-white uppercase tracking-[0.3em] mb-4">Intelligence</h4>
+<ul class="space-y-2">
+<li><a class="text-xs text-slate-500 hover:text-accent-gold" href="#">Spending Map</a></li>
+<li><a class="text-xs text-slate-500 hover:text-accent-gold" href="#">Lobbyist Database</a></li>
+<li><a class="text-xs text-slate-500 hover:text-accent-gold" href="#">Leak Submission</a></li>
+<li><a class="text-xs text-slate-500 hover:text-accent-gold" href="#">FOIA Requests</a></li>
+</ul>
+</div>
+<div>
+<h4 class="text-[10px] font-black text-white uppercase tracking-[0.3em] mb-4">Security</h4>
+<ul class="space-y-2">
+<li><a class="text-xs text-slate-500 hover:text-accent-gold" href="#">Privacy Protocol</a></li>
+<li><a class="text-xs text-slate-500 hover:text-accent-gold" href="#">Encrypted Comms</a></li>
+<li><a class="text-xs text-slate-500 hover:text-accent-gold" href="#">Source Protection</a></li>
+<li><a class="text-xs text-slate-500 hover:text-accent-gold" href="#">Terms of Service</a></li>
+</ul>
+</div>
+</div>
+<div class="max-w-[1600px] mx-auto pt-8 border-t border-slate-800/50 flex flex-col md:flex-row justify-between items-center gap-4">
+<p class="text-[10px] font-bold text-slate-600 uppercase tracking-widest">© 2024 THE POLICY BRIEF | CLEARANCE LEVEL: PUBLIC ACCESS</p>
+<div class="flex gap-4">
+<span class="text-[10px] font-bold text-slate-600 uppercase border border-slate-700 px-2 py-1">Secure Core: 8.4.1</span>
+<span class="text-[10px] font-bold text-slate-600 uppercase border border-slate-700 px-2 py-1">IP: 192.168.1.104</span>
+</div>
+</div>
+</footer>
+</div>
+</body></html>

@@ -1,0 +1,30 @@
+# Python
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+
+# Environment & Secrets
+.env
+google_creds.json
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Test files (keep in repo but ignore generated test outputs)
+*.jpg
+!web/public/**/*.jpg
+!web/public/**/*.png
+
+# Node
+web/node_modules/
+web/dist/
+web/.astro/
+
+# Gemini brain (local only)
+.gemini/

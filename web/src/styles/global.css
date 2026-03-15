@@ -1,0 +1,47 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #001f3d;
+  --color-accent-gold: #D4AF37;
+  --color-alert-red: #FF4C4C;
+  --color-background-light: #f5f7f8;
+  --color-background-dark: #0f1923;
+  --color-border-federal: #1e2e3d;
+
+  --font-display: "Inter", sans-serif;
+  --font-header: "Montserrat", sans-serif;
+
+  --radius: 0.125rem;
+  --radius-lg: 0.25rem;
+  --radius-xl: 0.5rem;
+  --radius-full: 0.75rem;
+}
+
+@layer utilities {
+  .glass-panel {
+    background: rgba(15, 25, 35, 0.7);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  .glow-red {
+    box-shadow: 0 0 15px rgba(239, 68, 68, 0.4);
+  }
+  .pork-glow {
+    box-shadow: 0 0 15px rgba(255, 76, 76, 0.3);
+    border: 1px solid #FF4C4C;
+  }
+  .scanline {
+    background: linear-gradient(to bottom, transparent 50%, rgba(0, 31, 61, 0.1) 50%);
+    background-size: 100% 4px;
+  }
+  ::-webkit-scrollbar {
+    width: 4px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #20364b;
+    border-radius: 10px;
+  }
+}
