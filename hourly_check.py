@@ -160,9 +160,12 @@ def run_hourly_check():
     # --- Step 4: Send email notifications ---
     if resend_key and new_audits:
         delivery = ResendDelivery(resend_key)
-        for audit in new_audits:
+        for i, audit in enumerate(new_audits):
             print(f"📧 Sending script email for {audit.get('bill_id')}...")
             delivery.deliver_short_script(audit, TARGET_EMAIL)
+            # Pace the emails to respect Resend 2 req/sec limit
+            if i < len(new_audits) - 1:
+                time.sleep(1.0)
 
     # --- Step 5: Persist results ---
     all_audits = existing_audits + new_audits
