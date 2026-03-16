@@ -133,7 +133,7 @@ class ThumbnailGenerator:
         if fluff_detected:
             try:
                 # Load the pig icon
-                pig_path = "/Users/matt/Documents/AntiGravity/The Policy Brief/web/public/pig-icon.png"
+                pig_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "web", "public", "pig-icon.png")
                 if os.path.exists(pig_path):
                     pig_img = Image.open(pig_path).convert("RGBA")
                     

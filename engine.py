@@ -165,7 +165,7 @@ class FinancialAuditor:
         for attempt in range(max_retries):
             try:
                 response = self.client.models.generate_content(
-                    model='gemini-flash-latest',
+                    model='gemini-2.0-flash',
                     contents=prompt,
                     config=config,
                 )
@@ -347,6 +347,10 @@ class FinancialAuditor:
         You are a Prosecutor Auditor. Your job is to verify the following drafted JSON data against the 
         source bill text. Ensure strictly zero hallucinations. If a dollar amount or claim in the draft 
         data is not explicitly present in the source text, remove it or set it to 0/False.
+        
+        CRITICAL RULE: Do NOT remove, alter, or truncate the "heygen_short_script", "blog_post_markdown", 
+        or "youtube_metadata" fields. These are creative generations based on the data and cannot be 
+        strictly verified against the source text. Keep them exactly as they appear in the Draft Data.
         
         Ensure the final output matches exactly the requested V7 schema:
         {V7_SCHEMA}
