@@ -23,7 +23,7 @@ TARGET_EMAIL = "mattfuller85@gmail.com"
 # Gemini free-tier rate limits (15 RPM). 3 bills × 3 calls each = 9 calls.
 # Remaining new bills will be picked up by the next run.
 MAX_BILLS_PER_RUN = 10
-PACING_SECONDS = 2  # Drastically reduced pacing now that robust 429 backoff is in place
+PACING_SECONDS = 15  # Increased pacing to respect Gemini 15 RPM free tier limits
 
 
 def load_known_ids() -> set:

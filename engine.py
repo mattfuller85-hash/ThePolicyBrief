@@ -201,6 +201,10 @@ class FinancialAuditor:
         if not draft_data:
             return {}
             
+        import time
+        print("⏳ Waiting 5s between CoVe passes...")
+        time.sleep(5)
+            
         print("Executing CoVe Pass 2: The Prosecutor (Verification)...")
         verified_data = self._pass_2_verification(bill_text, draft_data)
         
@@ -316,6 +320,7 @@ class FinancialAuditor:
         {bill_text}
         """
         
+        text = None
         try:
             # V7 Standards: Strict determinism and strictly structured JSON response
             response = self._call_gemini_with_backoff(
@@ -335,7 +340,7 @@ class FinancialAuditor:
             return json.loads(text.strip())
         except Exception as e:
             print(f"❌ Gemini API Error in Pass 1: {e}")
-            print(f"--- RAW TEXT THAT FAILED JSON DECODING ---\n{text}\n------------------------------------------")
+            print(f"--- RAW TEXT THAT FAILED JSON DECODING ---\n{text if text is not None else 'No text generated'}\n------------------------------------------")
             return {}
 
     def _pass_2_verification(self, source_text: str, draft_data: Dict[str, Any]) -> Dict[str, Any]:
@@ -361,6 +366,7 @@ class FinancialAuditor:
         Source Bill Text:
         {source_text}
         """
+        text = None
         try:
             response = self._call_gemini_with_backoff(
                 prompt=prompt,
@@ -379,6 +385,7 @@ class FinancialAuditor:
             return json.loads(text.strip())
         except Exception as e:
             print(f"❌ Gemini API Error in Pass 2: {e}")
+            print(f"--- FAILED PASS 2 OUTPUT ---\n{text if text is not None else 'No text generated'}\n----------------------------")
             return draft_data
 
     def dox_sponsor(self, sponsor_name: str) -> Dict[str, Any]:
@@ -660,7 +667,7 @@ if __name__ == "__main__":
         mock_bill_text = "This bill allocates $30,000,000 for the construction of a new suspension bridge connecting the two main commercial districts. Additionally, a rider has been attached to allocate $5,000,000 for a luxury coy fish pond in the mayor's backyard, completely unrelated to the bridge infrastructure."
         
         print("\nExecuting CoVe Pipeline...")
-        audit_result = auditor.audit_bill(mock_bill_text, mock_bill_title)
+        audit_result = auditor.audit_bill(mock_bill_text, mock_bill_title, ANCHORS[0])
         print("\n--- FINAL VERIFIED AUDIT ---")
         print(json.dumps(audit_result, indent=2))
     else:
