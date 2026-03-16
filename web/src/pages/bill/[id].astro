@@ -13,7 +13,7 @@ export function getStaticPaths() {
 const { audit } = Astro.props;
 
 // Convert markdown to HTML for the blog post content
-const blogPostHtml = marked.parse(audit.blog_post_markdown || '');
+const blogPostHtml = await marked.parse(audit.blog_post_markdown || '');
 
 const formatMoney = (amount) => {
 	if (amount == null) return '$0';
@@ -31,8 +31,9 @@ const videoId = getYoutubeVideoId(audit.youtube_url);
 ---
 
 <Layout title={`Bill Dossier: ${audit.bill_id}`} activePath="/bill">
-	<!-- Left Side: Analysis -->
-    <section class="w-full lg:w-3/5 overflow-y-auto p-6 md:p-10 space-y-12">
+	<div class="flex flex-col lg:flex-row w-full flex-1">
+		<!-- Left Side: Analysis -->
+		<section class="w-full lg:w-3/5 p-6 md:p-10 space-y-12 border-r border-slate-800">
         <!-- Breadcrumbs -->
         <nav class="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-slate-500">
             <a class="hover:text-accent-gold" href="/">Intelligence Dashboard</a>
@@ -41,18 +42,22 @@ const videoId = getYoutubeVideoId(audit.youtube_url);
         </nav>
         
         <!-- Title Section -->
-        <div class="space-y-4">
-            <h1 class="font-header text-4xl md:text-5xl font-black uppercase leading-none tracking-tight text-white">
-                {audit.youtube_metadata?.title || audit.bill_id}
-            </h1>
-            <div class="flex flex-wrap items-center gap-4 pt-2">
-                <span class="px-2 py-1 bg-primary text-slate-300 text-[10px] font-black uppercase tracking-widest border border-slate-700">Classified: Grade A</span>
-                {audit.fluff_detected ? (
-                    <span class="px-2 py-1 bg-alert-red/20 text-alert-red text-[10px] font-black uppercase tracking-widest border border-alert-red/50">Status: Pork Detected</span>
-                ) : (
-                    <span class="px-2 py-1 bg-green-900/30 text-green-400 text-[10px] font-black uppercase tracking-widest border border-green-800">Status: Clean Bill</span>
-                )}
-                <span class="text-slate-500 text-[10px] font-bold uppercase tracking-widest">Proposed: {audit.date_proposed}</span>
+        <div class="mb-12 border-b border-primary/30 pb-6 flex flex-col items-start gap-4">
+            <h1 class="font-header text-3xl md:text-5xl font-black uppercase tracking-tight text-slate-100">{audit.title}</h1>
+            <div class="flex flex-wrap items-center justify-between w-full gap-4">
+                <div class="flex flex-wrap items-center gap-3">
+                    <span class="px-2 py-1 bg-primary text-slate-300 text-[10px] font-black uppercase tracking-widest border border-slate-700">Classified: Grade A</span>
+                    {audit.fluff_detected ? (
+                        <span class="px-2 py-1 bg-alert-red/20 text-alert-red text-[10px] font-black uppercase tracking-widest border border-alert-red/50">Status: Pork Detected</span>
+                    ) : (
+                        <span class="px-2 py-1 bg-green-900/30 text-green-400 text-[10px] font-black uppercase tracking-widest border border-green-800">Status: Clean Bill</span>
+                    )}
+                    <span class="text-slate-500 text-[10px] font-bold uppercase tracking-widest">Proposed: {audit.date_proposed}</span>
+                </div>
+                <a href={`https://www.congress.gov/quick-search/legislation?wordsAndPhrases=${audit.bill_id}`} target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 bg-primary/50 hover:bg-slate-800 text-slate-200 px-4 py-2 rounded text-[10px] font-black uppercase tracking-widest transition-colors border border-slate-600">
+                    <span class="material-symbols-outlined text-sm">open_in_new</span>
+                    Read The Bill
+                </a>
             </div>
         </div>
         
@@ -69,7 +74,7 @@ const videoId = getYoutubeVideoId(audit.youtube_url);
         )}
 
         <!-- The Blog Post Content -->
-        <div class="prose prose-invert prose-lg max-w-none prose-headings:font-header prose-headings:font-black prose-headings:uppercase prose-headings:tracking-widest prose-h2:text-accent-gold prose-h3:text-slate-300 prose-p:text-slate-400 prose-p:leading-relaxed prose-li:text-slate-400">
+        <div class="markdown-content">
             {videoId && (
                 <div class="mb-10 aspect-video w-full rounded-xl overflow-hidden border border-slate-800 shadow-2xl relative border-primary/50">
                     <iframe 
@@ -113,7 +118,7 @@ const videoId = getYoutubeVideoId(audit.youtube_url);
         )}
         
         <!-- Sponsor Accountability -->
-        {audit.sponsor_contact_info && (
+        {audit.sponsor_contact_info && audit.sponsor_contact_info.sponsor_name && audit.sponsor_contact_info.sponsor_name !== "Not Found" && (
             <div class="space-y-6 pb-20 mt-12">
                 <div class="flex items-center gap-2">
                     <span class="material-symbols-outlined text-accent-gold">person</span>
@@ -126,12 +131,16 @@ const videoId = getYoutubeVideoId(audit.youtube_url);
                             <p class="text-xs text-accent-gold font-bold uppercase tracking-widest">Sponsor</p>
                         </div>
                         <div class="flex flex-wrap gap-4">
-                            <a class="px-4 py-2 bg-background-dark border border-slate-700 rounded hover:border-accent-gold hover:text-accent-gold transition-colors text-slate-300 font-bold uppercase tracking-widest text-[10px] flex items-center gap-2" href={`tel:${audit.sponsor_contact_info.phone_number.replace(/[^0-9]/g, '')}`}>
-                                <span class="material-symbols-outlined text-sm">call</span> {audit.sponsor_contact_info.phone_number}
-                            </a>
-                            <a class="px-4 py-2 bg-background-dark border border-slate-700 rounded hover:border-accent-gold hover:text-accent-gold transition-colors text-slate-300 font-bold uppercase tracking-widest text-[10px] flex items-center gap-2" href={audit.sponsor_contact_info.website} target="_blank">
-                                <span class="material-symbols-outlined text-sm">language</span> Official Website
-                            </a>
+                            {audit.sponsor_contact_info.phone_number && (
+                                <a class="px-4 py-2 bg-background-dark border border-slate-700 rounded hover:border-accent-gold hover:text-accent-gold transition-colors text-slate-300 font-bold uppercase tracking-widest text-[10px] flex items-center gap-2" href={`tel:${audit.sponsor_contact_info.phone_number.replace(/[^0-9]/g, '')}`}>
+                                    <span class="material-symbols-outlined text-sm">call</span> {audit.sponsor_contact_info.phone_number}
+                                </a>
+                            )}
+                            {audit.sponsor_contact_info.website && (
+                                <a class="px-4 py-2 bg-background-dark border border-slate-700 rounded hover:border-accent-gold hover:text-accent-gold transition-colors text-slate-300 font-bold uppercase tracking-widest text-[10px] flex items-center gap-2" href={audit.sponsor_contact_info.website} target="_blank">
+                                    <span class="material-symbols-outlined text-sm">language</span> Official Website
+                                </a>
+                            )}
                             {audit.sponsor_contact_info.social_handles?.twitter && (
                                 <a class="px-4 py-2 bg-background-dark border border-slate-700 rounded hover:border-accent-gold hover:text-accent-gold transition-colors text-slate-300 font-bold uppercase tracking-widest text-[10px] flex items-center gap-2" href={`https://twitter.com/${audit.sponsor_contact_info.social_handles.twitter}`} target="_blank">
                                     <span class="material-symbols-outlined text-sm">share</span> @{audit.sponsor_contact_info.social_handles.twitter}
@@ -199,4 +208,5 @@ const videoId = getYoutubeVideoId(audit.youtube_url);
             <span>DATE: {audit.date_proposed}</span>
         </div>
     </aside>
+    </div>
 </Layout>

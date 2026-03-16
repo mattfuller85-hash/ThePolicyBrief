@@ -69,3 +69,8 @@
 - [ ] **Duplicate Prevention System**
   - [ ] Track which bills have been posted to YouTube and X, similar to `known_bill_ids.json`.
   - [ ] Prevent re-posting videos or tweets for bills that have already been published.
+
+## Phase 8: CMS Management Integration
+- [ ] Implement a lightweight, web-based Content Management System (CMS) directly on the website.
+- [ ] Enable manual drafting, editing, and deletion of AI-generated blog posts without requiring code or JSON manipulation.
+- [ ] Ensure seamless integration with the Astro framework (evaluating Git-based Headless CMS options like Keystatic, TinaCMS, or Decap).

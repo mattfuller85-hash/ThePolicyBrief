@@ -64,6 +64,8 @@ V7_SCHEMA = """
   ],
   "sponsor_contact_info": {
     "sponsor_name": "String",
+    "political_affiliation": "String (e.g., Democrat, Republican, Independent)",
+    "state": "String (e.g., TX, CA, NY)",
     "phone_number": "String",
     "website": "String",
     "social_handles": {
@@ -72,8 +74,8 @@ V7_SCHEMA = """
       "instagram": "String"
     }
   },
-  "heygen_short_script": "String (30-45 second script. MANDATORY OPENING: If a sponsor name is passed as input it MUST start EXACTLY: 'Proposed by {sponsor name}, Bill {Bill ID}, otherwise known as the \"{Bill Title}\" that is coming to the floor for vote soon...'. If NO SPONSOR is provided, start exactly like: 'Bill {Bill ID}, otherwise known as the \"{Bill Title}\" that is coming to the floor for vote soon...'. TONE RULE: DO NOT use AI-like words such as 'audit', 'my audit', 'delve', or 'examine'. Instead say normal things like 'It appears, after reading the whole bill that...'. CRITICALLY: quote the exact text from the bill that contains the pork. Explicitly name the 'winners' and 'losers' at the end. Maintain a highly professional tone.)",
-  "blog_post_markdown": "String (A comprehensive, authoritative blog post detailing the bill, its legitimate spending, the pork discovered, and why taxpayers should care. Use the Neutral Auditor brand voice. CRITICALLY: you MUST quote the exact text from the bill when detailing the pork discovered.)",
+  "heygen_short_script": "String (30-45 second script. MANDATORY OPENING: If a sponsor name is passed as input it MUST start EXACTLY: 'Proposed by {sponsor name}, Bill {Bill ID}, otherwise known as the \\'{Bill Title}\\' that is coming to the floor for vote soon...'. If NO SPONSOR is provided, start exactly like: 'Bill {Bill ID}, otherwise known as the \\'{Bill Title}\\' that is coming to the floor for vote soon...'. TONE RULE: DO NOT use AI-like words such as 'audit', 'my audit', 'delve', or 'examine'. Instead say normal things like 'It appears, after reading the whole bill that...'. CRITICALLY: IF pork exists, quote the exact text from the bill that contains the pork. Explicitly name the 'winners' and 'losers' at the end. Maintain a highly professional tone.)",
+  "blog_post_markdown": "String (A comprehensive blog post MUST include these EXACT markdown headings: 1. 'The Sponsor' (Include Name, Political Affiliation, State, and Proposed Spending Amount). 2. 'Stated Purpose' (A summary of what the sponsor claims the bill is about). 3. 'What\\'s Really In It' (Detail the actual effects, unmask any fluff/pork, and IF pork exists, quote the exact text from the bill). 4. 'Winners and Losers' (Explicitly detail which exact industries/groups benefit and which lose). TONE RULE: DO NOT use AI-like words such as 'audit', 'my audit', 'delve', or 'examine'.)",
   "youtube_metadata": {
     "title": "String (Catchy, engaging YouTube title under 70 characters)",
     "description": "String (Detailed but punchy description of the video, including a brief summary of the bill and asking viewers for their thoughts)",
@@ -157,15 +159,13 @@ class FinancialAuditor:
         import time
         import re
         
-        # Proactively pace out every single Gemini API request by 15 seconds to ensure
-        # we strictly stay under the 15 RPM free-tier limit. (15s = 4 requests per minute).
-        print("⏳ Pacing API: Waiting 15s to guarantee we stay under free-tier AI rate limits...")
-        time.sleep(15)
+        # We will rely on the 429 exponential backoff to handle rate limits automatically
+        # rather than manually sleeping on every single request.
         
         for attempt in range(max_retries):
             try:
                 response = self.client.models.generate_content(
-                    model='gemini-flash-latest',
+                    model='gemini-1.5-flash',
                     contents=prompt,
                     config=config,
                 )
@@ -325,9 +325,17 @@ class FinancialAuditor:
                     response_mime_type="application/json",
                 ),
             )
-            return json.loads(response.text)
+            text = response.text.strip()
+            if text.startswith("```json"):
+                text = text[7:]
+            elif text.startswith("```"):
+                text = text[3:]
+            if text.endswith("```"):
+                text = text[:-3]
+            return json.loads(text.strip())
         except Exception as e:
             print(f"❌ Gemini API Error in Pass 1: {e}")
+            print(f"--- RAW TEXT THAT FAILED JSON DECODING ---\n{text}\n------------------------------------------")
             return {}
 
     def _pass_2_verification(self, source_text: str, draft_data: Dict[str, Any]) -> Dict[str, Any]:
@@ -357,7 +365,14 @@ class FinancialAuditor:
                     response_mime_type="application/json",
                 ),
             )
-            return json.loads(response.text)
+            text = response.text.strip()
+            if text.startswith("```json"):
+                text = text[7:]
+            elif text.startswith("```"):
+                text = text[3:]
+            if text.endswith("```"):
+                text = text[:-3]
+            return json.loads(text.strip())
         except Exception as e:
             print(f"❌ Gemini API Error in Pass 2: {e}")
             return draft_data
@@ -366,10 +381,11 @@ class FinancialAuditor:
         """Use Google Search grounding to retrieve current Phone, Website, and Social handles."""
         print(f"Retrieving contact info (Sponsor Dox) with Grounding for {sponsor_name}...")
         prompt = f"""
-        Find the current official Washington DC phone number, official website, and any 
+        Find the current official Washington DC phone number, official website, 
+        political affiliation (e.g. Democrat, Republican), represented state, and any 
         official social media handles (Twitter/X, Facebook, Instagram) for US Senator/Representative {sponsor_name}.
         Respond in strict JSON with these keys: 
-        "sponsor_name", "phone_number", "website", "social_handles" (an object with "twitter", "facebook", "instagram" keys).
+        "sponsor_name", "political_affiliation", "state", "phone_number", "website", "social_handles" (an object with "twitter", "facebook", "instagram" keys).
         """
         try:
             response = self._call_gemini_with_backoff(
@@ -392,6 +408,8 @@ class FinancialAuditor:
             print(f"❌ Gemini API Error in Sponsor Dox: {e}")
             return {
                 "sponsor_name": sponsor_name,
+                "political_affiliation": "Unknown",
+                "state": "Unknown",
                 "phone_number": "Unknown",
                 "website": "Unknown",
                 "social_handles": {}

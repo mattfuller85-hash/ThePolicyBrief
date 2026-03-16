@@ -37,7 +37,7 @@ const { title, activePath = '/' } = Astro.props;
 					</a>
 				</div>
 				<nav class="hidden lg:flex items-center gap-6">
-					<a href="/" class={`text-xs font-bold uppercase tracking-tighter transition-colors ${activePath === '/' ? 'text-slate-100 border-b-2 border-accent-gold pb-1' : 'text-slate-400 hover:text-accent-gold'}`}>Intelligence</a>
+					<a href="/" class={`text-xs font-bold uppercase tracking-tighter transition-colors ${activePath === '/' ? 'text-slate-100 border-b-2 border-accent-gold pb-1' : 'text-slate-400 hover:text-accent-gold'}`}>Home</a>
 					<a href="/bills" class={`text-xs font-bold uppercase tracking-tighter transition-colors ${activePath.startsWith('/bill') ? 'text-slate-100 border-b-2 border-accent-gold pb-1' : 'text-slate-400 hover:text-accent-gold'}`}>Active Bills</a>
 					<a href="/pork-watch" class={`text-xs font-bold uppercase tracking-tighter transition-colors ${activePath === '/pork-watch' ? 'text-slate-100 border-b-2 border-accent-gold pb-1' : 'text-slate-400 hover:text-accent-gold'}`}>Pork Watch</a>
 					<a href="/archive" class={`text-xs font-bold uppercase tracking-tighter transition-colors ${activePath === '/archive' ? 'text-slate-100 border-b-2 border-accent-gold pb-1' : 'text-slate-400 hover:text-accent-gold'}`}>Archive</a>
@@ -69,8 +69,8 @@ const { title, activePath = '/' } = Astro.props;
 							<img alt="Footer Logo" class="opacity-50 grayscale h-5 w-auto mix-blend-screen" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCMk3UGndWwKQqjDKCxCs_ykJuWwboCow7L4k7Bed0lN8CiMfmkvICY62ScUb5cBK-hjvTLICscY-J3-p36YZjDI4PPD0odpQNLInIIVz9V-IfAYql0Tbqainn-jxPV-23FaseCwnWhV_YeIukIbs3cE4jexRxtGD6FLl0bbojhHtiDjTCAZHnc4Sifxl0T02x6OXrtTassQzu_RWzGyTMEo7vE9IhK7wlFBUVct4__abqy6b4RtDqSOiOY7deZWV38-EFSr-t96SbO"/>
 							<h2 class="text-xs font-black text-slate-400 uppercase tracking-widest italic font-header hidden sm:block">The Policy Brief</h2>
 						</div>
-						<div class="hidden md:flex gap-4 text-[10px] font-black uppercase tracking-widest text-slate-500">
-							<a href="#" class="hover:text-accent-gold transition-colors">Intelligence</a>
+						<div class="hidden md:flex gap-4 text-[10px] font-bold uppercase tracking-widest text-slate-500">
+							<a href="#" class="hover:text-accent-gold transition-colors">Home</a>
 							<a href="#" class="hover:text-accent-gold transition-colors">Security</a>
 						</div>
 					</div>
