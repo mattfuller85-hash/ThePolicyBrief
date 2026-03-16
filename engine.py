@@ -8,8 +8,8 @@ import json
 from enum import Enum
 from typing import Dict, Any, List, Optional
 
-from google.oauth2 import service_account
-from googleapiclient.discovery import build
+# from google.oauth2 import service_account
+# from googleapiclient.discovery import build
 import resend
 # from PIL import Image, ImageDraw, ImageFont
 # import google.generativeai as genai
@@ -72,7 +72,7 @@ V7_SCHEMA = """
       "instagram": "String"
     }
   },
-  "heygen_short_script": "String (30s-2m script. MANDATORY OPENING: You MUST start the script with EXACTLY this structure, filling in the brackets: 'Bill [Insert Bill ID here], otherwise known as the \"[Insert Bill Title here]\" that is coming to the floor for vote soon...'. Discuss any fluff/pork, and CRITICALLY: you MUST quote the exact text from the bill that contains the pork. Explicitly state who the winners and losers are at the end. IMPORTANT: Maintain a highly professional tone. Do NOT use the filler word 'like' (valleygirl style) regardless of your persona. Be engaging, but professional.)",
+  "heygen_short_script": "String (30-45 second script. MANDATORY OPENING: If a sponsor name is passed as input it MUST start EXACTLY: 'Proposed by {sponsor name}, Bill {Bill ID}, otherwise known as the \"{Bill Title}\" that is coming to the floor for vote soon...'. If NO SPONSOR is provided, start exactly like: 'Bill {Bill ID}, otherwise known as the \"{Bill Title}\" that is coming to the floor for vote soon...'. TONE RULE: DO NOT use AI-like words such as 'audit', 'my audit', 'delve', or 'examine'. Instead say normal things like 'It appears, after reading the whole bill that...'. CRITICALLY: quote the exact text from the bill that contains the pork. Explicitly name the 'winners' and 'losers' at the end. Maintain a highly professional tone.)",
   "blog_post_markdown": "String (A comprehensive, authoritative blog post detailing the bill, its legitimate spending, the pork discovered, and why taxpayers should care. Use the Neutral Auditor brand voice. CRITICALLY: you MUST quote the exact text from the bill when detailing the pork discovered.)",
   "youtube_metadata": {
     "title": "String (Catchy, engaging YouTube title under 70 characters)",
@@ -188,7 +188,7 @@ class FinancialAuditor:
                         continue
                 raise e
 
-    def audit_bill(self, bill_text: str, bill_title: str, anchor: Dict[str, str] = None) -> Dict[str, Any]:
+    def audit_bill(self, bill_text: str, bill_title: str, anchor: dict, sponsor_name: Optional[str] = None, bill_id: Optional[str] = None) -> dict:
         """
         Executes the Chain-of-Verification (CoVe) Two-Pass System.
         """
@@ -196,7 +196,7 @@ class FinancialAuditor:
             return {}
             
         print("Executing CoVe Pass 1: Extraction...")
-        draft_data = self._pass_1_extraction(bill_text, bill_title, anchor)
+        draft_data = self._pass_1_extraction(bill_text, bill_title, anchor, sponsor_name, bill_id)
         
         if not draft_data:
             return {}
@@ -276,7 +276,7 @@ class FinancialAuditor:
             print(f"❌ Gemini API Error in Summary Script: {e}")
             return {}, "None"
 
-    def _pass_1_extraction(self, bill_text: str, bill_title: str, anchor: Dict[str, str] = None) -> Dict[str, Any]:
+    def _pass_1_extraction(self, bill_text: str, bill_title: str, anchor: dict = None, sponsor_name: Optional[str] = None, bill_id: Optional[str] = None) -> dict:
         """
         First pass: Extracts all dollar amounts, identifies recipients, classifies as Legitimate/Pork,
         and identifies 'Fluff' (unrelated riders/earmarks like the 'Coy fish pond' test).
@@ -298,7 +298,9 @@ class FinancialAuditor:
 
         prompt = f"""
         You are a highly analytical auditor AND an engaging YouTube scriptwriter. Review the following congressional bill text.
+        Bill ID: {bill_id if bill_id else 'Unknown'}
         Bill Title: {bill_title}
+        Sponsor Name: {sponsor_name if sponsor_name else 'Not Provided'}
         
         Perform a financial audit. Extract every single dollar amount mentioned.
         Classify spending directly related to the title as 'Legitimate'.

@@ -126,9 +126,15 @@ def run_hourly_check():
             print(f"⚠️  No summary text available for {bill_id}. Using title only.")
             summary_text = f"Bill titled: {bill_title}. No detailed summary text is available from Congress.gov at this time."
 
+        # Extract Sponsor Name
+        sponsor_name = None
+        sponsors = bill.get("sponsors", [])
+        if sponsors:
+            sponsor_name = sponsors[0].get("name")
+
         # Run the CoVe two-pass audit (this also generates the blog post + YouTube script)
         anchor = random.choice(ANCHORS)
-        audit_result = auditor.audit_bill(summary_text, bill_title, anchor)
+        audit_result = auditor.audit_bill(summary_text, bill_title, anchor, sponsor_name=sponsor_name)
 
         if not isinstance(audit_result, dict):
             print(f"⚠️  Audit returned non-dict for {bill_id}. Skipping.")
