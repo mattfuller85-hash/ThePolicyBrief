@@ -77,51 +77,9 @@
   },
   {
     "bill_id": "HR4366",
-    "anchor_name": "Jack Vance",
+    "anchor_name": "Elena Rostova",
     "title": "Save Local Business Act",
     "congress": 119,
-    "processed_at": "2026-03-17T03:23:43.237559+00:00"
-  },
-  {
-    "bill_id": "HR5304",
-    "date_proposed": "2025-09-11",
-    "historical_context": "This bill is part of the annual appropriations process for fiscal year 2026, specifically allocating funds to the Departments of Labor, Health and Human Services, and Education, along with related agencies. It aims to fund the operational and programmatic needs of these critical government bodies for the upcoming fiscal year.",
-    "total_spending": 0,
-    "legitimate_spending": 0,
-    "pork_barrel_spending": 0,
-    "pork_to_value_ratio": 0,
-    "fluff_detected": false,
-    "fluff_items": [],
-    "sponsor_contact_info": {
-      "sponsor_name": "Mr. Aderholt",
-      "political_affiliation": "Unknown",
-      "state": "Unknown",
-      "phone_number": "Unknown",
-      "website": "Unknown",
-      "social_handles": {}
-    },
-    "heygen_short_script": "Proposed by Mr. Aderholt, Bill HR5304, otherwise known as the 'Departments of Labor, Health and Human Services, and Education, and Related Agencies Appropriations Act, 2026'... Alright, let's cut to the chase. This is the big one, the annual budget grab for Labor, HHS, and Education. Think of it as the government's quarterly earnings report, but instead of profits, we're talking about taxpayer dollars. This bill lays out where the money goes for FY2026 \u2013 everything from job training and worker protections at Labor, to public health initiatives and Medicare at HHS, all the way to student loans and school programs at Education. It's a massive piece of legislation, touching millions of lives and businesses. Now, the good news? This is the bread and butter of government spending. The core functions of these departments are essential. We're talking about funding for the CDC to fight diseases, NIH for medical research, OSHA for worker safety, and Pell Grants for students. These are the engines that keep society running, the investments that should yield returns in public health and a skilled workforce. The bad news? Well, with appropriations this large, the devil is always in the details. This bill, as presented, doesn't explicitly call out specific dollar amounts for individual programs, which is unusual for a full appropriations act. It's more of a framework. However, historically, these types of bills can become vehicles for all sorts of 'special projects.' We're talking about earmarks, riders, things that have absolutely nothing to do with the core mission of Labor, HHS, or Education. Imagine finding funding for a local dog park tucked into a bill about national security \u2013 that's the kind of thing we watch out for. In this specific text, there are no explicit dollar figures or specific earmarks mentioned, which means we can't point to any 'pork' right here. It's a clean slate, at least on paper. The winners here are the agencies themselves and the beneficiaries of their core services: workers seeking training, patients needing healthcare, students pursuing education, and researchers pushing the boundaries of science. The losers? Well, if there were any hidden earmarks, it would be the taxpayers who end up footing the bill for projects that don't serve the public good. But based on this text, it's hard to identify specific losers. This bill was placed on the Union Calendar, Calendar No. 227, on September 11, 2025, and reported by the House Committee on Appropriations. It's a re-proposal, with two related bills found in its history. The vote is pending. Keep your eyes on this one; the real fight happens when the amendments come out.",
-    "blog_post_markdown": "# The Sponsor\nMr. Aderholt, Republican, AL. Proposed Spending Amount: Not Specified in Bill Text.\n\n# Stated Purpose\nThis bill provides fiscal year 2026 appropriations for the Departments of Labor, Health and Human Services, and Education, and related agencies. It outlines the funding allocation for the operational and programmatic activities of these key government departments.\n\n# What's Really In It\nThis appropriations act serves as the financial blueprint for several critical federal departments for fiscal year 2026. It details the agencies that will receive funding, including the Employment and Training Administration, the Centers for Disease Control and Prevention, the National Institutes of Health, the Substance Abuse and Mental Health Services Administration, the Centers for Medicare and Medicaid Services, and various programs within the Department of Education such as student financial assistance and higher education initiatives. It also covers related agencies like the Social Security Administration and the National Labor Relations Board. While the bill text itself does not specify dollar amounts or contain explicit earmarks or riders, it sets the stage for the allocation of significant taxpayer funds. The primary focus is on the core functions of these departments, which are essential for public health, education, and labor standards. As this is an appropriations bill, the actual spending will be detailed in subsequent documents or amendments, where potential 'pork' or unrelated items could be introduced.\n\n# Winners and Losers\n**Winners:** The primary beneficiaries are the Departments of Labor, Health and Human Services, and Education, along with their respective agencies and the public services they provide. This includes workers seeking employment and training, individuals relying on health services and research funded by NIH and CDC, students benefiting from financial aid and educational programs, and recipients of Social Security benefits. \n\n**Losers:** Based on the provided text, there are no explicitly identified losers. However, in the broader context of appropriations bills, potential losers could be taxpayers if funds are ultimately allocated to inefficient programs or unrelated earmarks not detailed in this initial text.\n\n# Voting and Proposal History\nThis bill was placed on the Union Calendar, Calendar No. 227, on September 11, 2025. It was reported by the House Committee on Appropriations as an original measure (H. Rept. 119-271) on the same date. This is a re-proposal, with two related/previous bills found in its history. The vote status is pending.",
-    "youtube_metadata": {
-      "title": "Govt Spending Bill: Pork or Purpose? HR5304 Breakdown!",
-      "description": "We're dissecting HR5304, the massive appropriations bill for Labor, HHS, and Education for 2026. Is it all essential spending, or is there hidden pork? Marcus 'The Hawk' Hayes breaks down the winners, losers, and what you need to know before the vote!",
-      "tags": [
-        "HR5304",
-        "Appropriations",
-        "Government Spending",
-        "Labor",
-        "HHS",
-        "Education",
-        "Pork Barrel",
-        "Politics",
-        "US Politics"
-      ],
-      "thumbnail_url": "https://example.com/thumbnail_hr5304.jpg",
-      "copyright": "\u00a9 2024 Your Channel Name"
-    },
-    "anchor_name": "Marcus 'The Hawk' Hayes",
-    "title": "Departments of Labor, Health and Human Services, and Education, and Related Agencies Appropriations Act, 2026",
-    "congress": 119,
-    "processed_at": "2026-03-17T03:28:53.066382+00:00"
+    "processed_at": "2026-03-17T03:33:21.050596+00:00"
   }
 ]

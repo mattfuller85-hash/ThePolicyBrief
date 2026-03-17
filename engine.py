@@ -192,7 +192,7 @@ class FinancialAuditor:
         for attempt in range(max_retries):
             try:
                 response = self.client.models.generate_content(
-                    model='gemini-2.5-flash-lite',
+                    model='gemini-1.5-flash',
                     contents=prompt,
                     config=config,
                 )
@@ -200,8 +200,10 @@ class FinancialAuditor:
             except Exception as e:
                 error_str = str(e)
                 if attempt < max_retries - 1 and ('429' in error_str or 'RESOURCE_EXHAUSTED' in error_str):
-                    # Fail fast instead of long sleeps
-                    print(f"⚠️ API Limit Hit! Retrying {attempt+1}/{max_retries} without wait...")
+                    # Pause briefly to let the quota bucket refill, but don't sleep forever
+                    print(f"⚠️ API Limit Hit! Pausing 10s before retry {attempt+1}/{max_retries}...")
+                    import time
+                    time.sleep(10.0)
                     continue
                 raise e
 
@@ -486,6 +488,7 @@ class ResendDelivery:
 
     def deliver_short_script(self, audit: Dict[str, Any], to_email: str, thumbnail_path: str = None) -> bool:
         """Emails a single generated short script instantly."""
+        import os
         if not self.api_key:
             print("❌ Resend API key missing. Cannot deliver script.")
             return False
@@ -520,7 +523,6 @@ class ResendDelivery:
                 "html": html_content
             }
             if thumbnail_path and os.path.exists(thumbnail_path):
-                import os
                 with open(thumbnail_path, "rb") as f:
                     file_data = f.read()
                 email_params["attachments"] = [
