@@ -1,4 +1,4 @@
-name: Hourly Congress Check
+name: 5-Minute Congress Check
 
 on:
   schedule:
@@ -43,7 +43,7 @@ jobs:
       - name: Install Python dependencies
         run: pip install -r requirements.txt
       
-      - name: Run Hourly Congress Check
+      - name: Run Congress Check (5-Minute Interval)
         run: python hourly_check.py
         env:
           FORCE_RESET: ${{ github.event.inputs.force_reset || 'no' }}

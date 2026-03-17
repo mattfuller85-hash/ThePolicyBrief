@@ -1,6 +1,6 @@
 """
-The Policy Brief - Hourly Congress Check
-Runs every hour via GitHub Actions. Fetches recent bills, deduplicates
+The Policy Brief - Congress Check (5-Minute Interval)
+Runs every 5 minutes via GitHub Actions. Fetches recent bills, deduplicates
 against previously processed bills, and runs the audit + content pipeline
 only when new legislation is found.
 """
@@ -101,7 +101,7 @@ def run_hourly_check():
     remaining = len(new_bills) - len(bills_to_process)
     print(f"🆕 Found {len(new_bills)} new bill(s). Processing {len(bills_to_process)} this run.")
     if remaining > 0:
-        print(f"   ⏭️  {remaining} bill(s) deferred to next hourly run.")
+        print(f"   ⏭️  {remaining} bill(s) deferred to next run.")
 
     # --- Step 3: Audit each new bill ---
     auditor = FinancialAuditor(api_key=gemini_key)
@@ -192,7 +192,7 @@ def run_hourly_check():
     save_audits(all_audits)
     save_known_ids(known_ids)
 
-    print(f"\n✅ Hourly check complete! Processed {len(new_audits)} new bill(s).")
+    print(f"\n✅ Check complete! Processed {len(new_audits)} new bill(s).")
     print(f"   Total audits on file: {len(all_audits)}")
 
     # Log what was generated for visibility
