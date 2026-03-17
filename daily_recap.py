@@ -3,8 +3,8 @@ import json
 from datetime import datetime, timezone, timedelta
 from typing import List, Dict, Any
 
-from engine import BillAuditor
-from delivery import ResendMessenger
+from engine import FinancialAuditor, ResendDelivery
+from dotenv import load_dotenv
 
 def read_todays_audits() -> List[Dict[str, Any]]:
     """Reads the daily_audits.json and filters for bills processed today."""
@@ -56,7 +56,15 @@ def main():
         
     print(f"Found {len(audits)} bills audited today. Generating recap...")
     
-    auditor = BillAuditor()
+    load_dotenv()
+    gemini_key = os.getenv("GEMINI_API_KEY")
+    resend_key = os.getenv("RESEND_API_KEY")
+
+    if not gemini_key:
+        print("❌ GEMINI_API_KEY missing. Exiting.")
+        return
+
+    auditor = FinancialAuditor(api_key=gemini_key)
     script_data, anchor_name = auditor.generate_daily_summary_script(audits)
     
     if not script_data:
@@ -69,24 +77,12 @@ def main():
     save_recap(script_data)
     
     # Send email
-    messenger = ResendMessenger()
-    html_body = f"""
-    <h1>{script_data.get('title', 'Daily Action Recap')}</h1>
-    <p><b>Anchor:</b> {anchor_name}</p>
-    <p><b>Description:</b> {script_data.get('description', '')}</p>
-    <hr>
-    <h2>Long-Form Script (7-10 minutes)</h2>
-    <pre style="font-family: sans-serif; white-space: pre-wrap;">{script_data.get('script_body', '')}</pre>
-    """
-    
-    try:
-        messenger.send_email(
-            subject=f"The Policy Brief: Daily Recap - {datetime.now(timezone(timedelta(hours=-5))).strftime('%b %d, %Y')}",
-            html_body=html_body
-        )
-        print("📧 Successfully emailed daily recap.")
-    except Exception as e:
-        print(f"❌ Failed to send email: {e}")
+    target_email = "mattfuller85@gmail.com"
+    if resend_key:
+        delivery = ResendDelivery(api_key=resend_key)
+        delivery.deliver_daily_summary(script_data, anchor_name, target_email)
+    else:
+        print("⚠️ RESEND_API_KEY missing. Skipping email delivery.")
 
 if __name__ == "__main__":
     main()
