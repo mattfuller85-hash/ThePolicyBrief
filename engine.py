@@ -185,12 +185,9 @@ class FinancialAuditor:
             self.client = None
             self.types = None
 
-    def _call_gemini_with_backoff(self, prompt: str, config: Any, max_retries: int = 4) -> Any:
+    def _call_gemini_with_backoff(self, prompt: str, config: Any, max_retries: int = 2) -> Any:
         import time
         import re
-        
-        # We will rely on the 429 exponential backoff to handle rate limits automatically
-        # rather than manually sleeping on every single request.
         
         for attempt in range(max_retries):
             try:
@@ -202,20 +199,11 @@ class FinancialAuditor:
                 return response
             except Exception as e:
                 error_str = str(e)
-                if '429' in error_str or 'RESOURCE_EXHAUSTED' in error_str:
-                    wait_time = 30.0 # Default wait
-                    match = re.search(r'retry in ([\d\.]+)s', error_str)
-                    if match:
-                        wait_time = float(match.group(1)) + 2.0 # Add 2 second buffer
-                    
-                    # Add exponential backoff multiplier (1x, 1.5x, 2x)
-                    multiplier = 1.0 + (attempt * 0.5) 
-                    actual_wait = wait_time * multiplier
-                    
-                    if attempt < max_retries - 1:
-                        print(f"⚠️ API Rate Limit Hit! Sleeping for {actual_wait:.1f}s before retry {attempt+1}/{max_retries}...")
-                        time.sleep(actual_wait)
-                        continue
+                if attempt < max_retries - 1 and ('429' in error_str or 'RESOURCE_EXHAUSTED' in error_str):
+                    # Fail fast instead of long sleeps, just a brief 2s pause
+                    print(f"⚠️ API Limit Hit! Doing a quick 2s pause before retry {attempt+1}/{max_retries}...")
+                    time.sleep(2.0)
+                    continue
                 raise e
 
     def audit_bill(self, bill_text: str, bill_title: str, anchor: dict, sponsor_name: Optional[str] = None, bill_id: Optional[str] = None) -> dict:
