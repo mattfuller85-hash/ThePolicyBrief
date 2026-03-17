@@ -1,1 +1,40 @@
-[]
+[
+  {
+    "bill_id": "HRES1074",
+    "date_proposed": "Not Provided",
+    "historical_context": "This bill celebrates the 175th anniversary of the Young Men's Christian Association (YMCA).",
+    "total_spending": 0.0,
+    "legitimate_spending": 0.0,
+    "pork_barrel_spending": 0.0,
+    "pork_to_value_ratio": 0.0,
+    "fluff_detected": false,
+    "fluff_items": [],
+    "sponsor_contact_info": {
+      "sponsor_name": "Not Provided",
+      "political_affiliation": "Unknown",
+      "state": "Unknown",
+      "phone_number": "Unknown",
+      "website": "Unknown",
+      "social_handles": {}
+    },
+    "heygen_short_script": "Bill Unknown, otherwise known as the 'Celebrating the 175th anniversary of the Young Men's Christian Association (YMCA)' that is coming to the floor for vote soon...\n\nOkay, so Congress is trying to celebrate the YMCA's 175th birthday. Like, cool, happy anniversary, YMCA. But here's the tea: there's literally zero dollars attached to this. It's just a resolution. So, no actual spending, which means no pork, no fluff, and honestly, no real winners or losers here. It's just... a celebration. Wild.",
+    "blog_post_markdown": "# The Sponsor\n\n**Name:** Not Provided\n**Political Affiliation:** Unknown\n**State:** Unknown\n**Proposed Spending Amount:** $0.00\n\n# Stated Purpose\n\nThe stated purpose of this bill is to celebrate the 175th anniversary of the Young Men's Christian Association (YMCA).\n\n# What's Really In It\n\nThis bill is a simple resolution to commemorate a significant anniversary for the YMCA. Upon review, there are no financial allocations or specific directives for spending. Therefore, there is no fluff or pork-barrel spending to unmask. The bill solely serves as a congratulatory measure.\n\n# Winners and Losers\n\n**Winners:** The Young Men's Christian Association (YMCA) and its members, who receive official recognition from Congress.\n\n**Losers:** No specific industries or groups are negatively impacted by this bill, as it involves no financial commitment or new regulations.",
+    "youtube_metadata": {
+      "title": "YMCA's 175th: Congress Celebrates (No $$!)",
+      "description": "Congress is talking about the YMCA's 175th anniversary! But wait... is there any actual spending involved? We break down this bill and see who's getting a shout-out. Let us know your thoughts below!",
+      "tags": [
+        "YMCA",
+        "Congress",
+        "Politics",
+        "Anniversary",
+        "Bill Breakdown"
+      ],
+      "thumbnail_url": "https://example.com/thumbnail.jpg",
+      "copyright": "\u00a9 2023 Your Channel Name"
+    },
+    "anchor_name": "Chloe Kim",
+    "title": "Celebrating the 175th anniversary of the Young Men's Christian Association (YMCA).",
+    "congress": 119,
+    "processed_at": "2026-03-17T01:39:15.318737+00:00"
+  }
+]
