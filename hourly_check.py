@@ -134,7 +134,7 @@ def run_hourly_check():
 
         # Run the CoVe two-pass audit (this also generates the blog post + YouTube script)
         anchor = random.choice(ANCHORS)
-        audit_result = auditor.audit_bill(summary_text, bill_title, anchor, sponsor_name=sponsor_name)
+        audit_result = auditor.audit_bill(summary_text, bill_title, anchor, sponsor_name=sponsor_name, bill_id=bill_id)
 
         if not isinstance(audit_result, dict):
             print(f"⚠️  Audit returned non-dict for {bill_id}. Skipping.")
