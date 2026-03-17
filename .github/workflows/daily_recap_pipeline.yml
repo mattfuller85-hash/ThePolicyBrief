@@ -9,7 +9,7 @@ on:
 env:
   GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
   RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
 
 permissions:
   contents: write
