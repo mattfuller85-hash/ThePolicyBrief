@@ -185,7 +185,7 @@ class FinancialAuditor:
             self.client = None
             self.types = None
 
-    def _call_gemini_with_backoff(self, prompt: str, config: Any, max_retries: int = 2) -> Any:
+    def _call_gemini_with_backoff(self, prompt: str, config: Any, max_retries: int = 5) -> Any:
         import time
         import re
         
@@ -200,10 +200,11 @@ class FinancialAuditor:
             except Exception as e:
                 error_str = str(e)
                 if attempt < max_retries - 1 and ('429' in error_str or 'RESOURCE_EXHAUSTED' in error_str):
-                    # Pause briefly to let the quota bucket refill, but don't sleep forever
-                    print(f"⚠️ API Limit Hit! Pausing 10s before retry {attempt+1}/{max_retries}...")
-                    import time
-                    time.sleep(10.0)
+                    # Parse the exact requested wait time from the error string, fallback to 35s
+                    match = re.search(r"retry in (\d+\.?\d*)s", error_str)
+                    sleep_time = float(match.group(1)) + 2.0 if match else 35.0
+                    print(f"⚠️ API Limit Hit! Pausing {sleep_time:.1f}s before retry {attempt+1}/{max_retries}...")
+                    time.sleep(sleep_time)
                     continue
                 raise e
 
