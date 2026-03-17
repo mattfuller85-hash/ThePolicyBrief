@@ -74,8 +74,8 @@ V7_SCHEMA = """
       "instagram": "String"
     }
   },
-  "heygen_short_script": "String (CRITICAL LENGTH REQUIREMENT: MUST be a 1 to 2 minute in-depth script with a STRICT MINIMUM of 300 words. Provide a highly detailed summary of the bill's actual effects and potential consequences. If the bill has NO spending (like a simple resolution), provide deep historical context, analyze the political posturing, explain who the sponsor is trying to appeal to, and detail the symbolic impact. DO NOT OUTPUT A SHORT SCRIPT! MANDATORY OPENING: If a sponsor name is passed as input it MUST start EXACTLY: 'Proposed by {sponsor name}, Bill {Bill ID}, otherwise known as the \\'{Bill Title}\\' that is coming to the floor for vote soon...'. If NO SPONSOR is provided, start exactly like: 'Bill {Bill ID}, otherwise known as the \\'{Bill Title}\\' that is coming to the floor for vote soon...'. TONE RULE: DO NOT use AI-like words such as 'audit', 'my audit', 'delve', 'explore', or 'examine'. Instead say normal things like 'It appears, after reading the whole bill that...'. CRITICALLY: IF pork exists, quote the exact text from the bill that contains the pork. Explicitly name the 'winners' and 'losers' at the end. Maintain a highly professional tone.)",
-  "blog_post_markdown": "String (A comprehensive blog post MUST include these EXACT markdown headings: 1. 'The Sponsor' (Include Name, Political Affiliation, State, and Proposed Spending Amount). 2. 'Stated Purpose' (A summary of what the sponsor claims the bill is about). 3. 'What\\'s Really In It' (Detail the actual effects, unmask any fluff/pork, and IF pork exists, quote the exact text from the bill). 4. 'Winners and Losers' (Explicitly detail which exact industries/groups benefit and which lose). TONE RULE: DO NOT use AI-like words such as 'audit', 'my audit', 'delve', or 'examine'.)",
+  "heygen_short_script": "String (CRITICAL LENGTH REQUIREMENT: MUST be a 1 to 2 minute in-depth script with a STRICT MINIMUM of 300 words. Provide a highly detailed summary of the bill's actual effects and potential consequences. If the bill has NO spending (like a simple resolution), provide deep historical context, analyze the political posturing, explain who the sponsor is trying to appeal to, and detail the symbolic impact. MANDATORY OPENING: If a sponsor name is passed as input it MUST start EXACTLY: 'Proposed by {sponsor name}, Bill {Bill ID}, otherwise known as the \\'{Bill Title}\\'...'. If NO SPONSOR is provided, start exactly like: 'Bill {Bill ID}, otherwise known as the \\'{Bill Title}\\'...'. CRITICAL INSTRUCTION: You MUST explicitly declare the exact 'winners' and 'losers' of the bill, specifying which industries prospered/were damaged, or which special interest groups benefited/were slammed. You MUST explicitly state when the bill goes up for a vote (if known). You MUST explicitly state if this is the first time the bill has been proposed; if not, state when it failed previously and how many times it has been proposed. CRITICALLY: IF pork exists, quote the exact text from the bill. Maintain a highly professional tone without using AI-like words such as 'audit' or 'delve'.)",
+  "blog_post_markdown": "String (A comprehensive blog post MUST include these EXACT markdown headings: 1. 'The Sponsor' (Include Name, Political Affiliation, State, and Proposed Spending Amount). 2. 'Stated Purpose' (A summary of what the sponsor claims the bill is about). 3. 'What\\'s Really In It' (Detail the actual effects, unmask any fluff/pork, and IF pork exists, quote the exact text from the bill). 4. 'Winners and Losers' (Explicitly detail which exact industries/groups benefit and which lose). 5. 'Voting and Proposal History' (Explicitly detail when it goes up for a vote, if this is its first proposal, or how many times it failed previously). TONE RULE: DO NOT use AI-like words such as 'audit', 'my audit', 'delve', or 'examine'.)",
   "youtube_metadata": {
     "title": "String (Catchy, engaging YouTube title under 70 characters)",
     "description": "String (Detailed but punchy description of the video, including a brief summary of the bill and asking viewers for their thoughts)",
@@ -135,6 +135,36 @@ class CongressSource:
         except Exception as e:
             print(f"❌ Error fetching bill summary: {e}")
             return None
+
+    def fetch_bill_actions(self, congress: int, bill_type: str, bill_number: int) -> List[Dict[str, Any]]:
+        """Fetch the actions for a specific bill to determine vote status."""
+        url = (
+            f"{self.base_url}/bill/{congress}/{bill_type.lower()}/{bill_number}"
+            f"/actions?api_key={self.api_key}"
+        )
+        try:
+            import requests
+            response = requests.get(url)
+            response.raise_for_status()
+            return response.json().get("actions", [])
+        except Exception as e:
+            print(f"❌ Error fetching bill actions for {bill_number}: {e}")
+            return []
+
+    def fetch_related_bills(self, congress: int, bill_type: str, bill_number: int) -> List[Dict[str, Any]]:
+        """Fetch related bills to determine previous proposals and historical failure/successes."""
+        url = (
+            f"{self.base_url}/bill/{congress}/{bill_type.lower()}/{bill_number}"
+            f"/relatedbills?api_key={self.api_key}"
+        )
+        try:
+            import requests
+            response = requests.get(url)
+            response.raise_for_status()
+            return response.json().get("relatedBills", [])
+        except Exception as e:
+            print(f"❌ Error fetching related bills for {bill_number}: {e}")
+            return []
 
     def get_bill_id(self, bill: Dict[str, Any]) -> str:
         """Generate a unique bill ID string from a Congress API bill object."""

@@ -121,10 +121,29 @@ def run_hourly_check():
         # Fetch bill summary text from Congress API
         summary_text = source.fetch_bill_summary(congress_num, bill_type, bill_number)
 
+        # Fetch bill actions & related bills for history
+        actions = source.fetch_bill_actions(congress_num, bill_type, bill_number)
+        related = source.fetch_related_bills(congress_num, bill_type, bill_number)
+        
+        history_context = "\n\n--- BILL HISTORY & STATUS ---\n"
+        if actions:
+            history_context += "Recent Actions & Vote Status:\n"
+            for action in actions[:5]: # just the 5 most recent to save tokens
+                history_context += f"- {action.get('actionDate', 'Unknown Date')}: {action.get('text', 'Unknown Action')}\n"
+        else:
+            history_context += "Recent Actions: Not available.\n"
+            
+        if related:
+            history_context += f"Previously Proposed: Yes, {len(related)} related/previous bills found.\n"
+        else:
+            history_context += "Previously Proposed: No (This appears to be the first time this bill is proposed).\n"
+
         if not summary_text:
             # Fall back to just using the title if no summary is available
             print(f"⚠️  No summary text available for {bill_id}. Using title only.")
             summary_text = f"Bill titled: {bill_title}. No detailed summary text is available from Congress.gov at this time."
+            
+        summary_text += history_context
 
         # Extract Sponsor Name
         sponsor_name = None
