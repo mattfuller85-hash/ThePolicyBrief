@@ -176,43 +176,34 @@ class FinancialAuditor:
     def __init__(self, api_key: str):
         self.api_key = api_key
         try:
-            import google.generativeai as genai
-            genai.configure(api_key=self.api_key)
-            self.model = genai.GenerativeModel('gemini-1.5-flash')
+            from google import genai
+            from google.genai import types
+            self.client = genai.Client(api_key=self.api_key)
+            self.types = types
         except ImportError:
-            print("❌ google-generativeai is not installed. Please run `pip install google-generativeai`.")
-            self.model = None
+            print("❌ google-genai is not installed. Please run `pip install google-genai`.")
+            self.client = None
+            self.types = None
 
-    def _call_gemini_with_backoff(self, prompt: str, generation_config: Optional[Dict[str, Any]] = None, max_retries: int = 5) -> Any:
+    def _call_gemini_with_backoff(self, prompt: str, config: Any, max_retries: int = 2) -> Any:
         import time
         import re
         
         for attempt in range(max_retries):
             try:
-                # With google.generativeai we can just pass generation_config dict
-                response = self.model.generate_content(
-                    prompt,
-                    generation_config=generation_config,
+                response = self.client.models.generate_content(
+                    model='gemini-2.0-flash',
+                    contents=prompt,
+                    config=config,
                 )
                 return response
             except Exception as e:
                 error_str = str(e)
                 if attempt < max_retries - 1 and ('429' in error_str or 'RESOURCE_EXHAUSTED' in error_str):
-                    wait_time = 60.0 # Default wait
-                    # Parse dynamic retry wait time from Google's response if available
-                    match = re.search(r'Please try again in (\d+)m(\d+\.\d+)s', error_str)
-                    if match:
-                        mins = int(match.group(1))
-                        secs = float(match.group(2))
-                        wait_time = (mins * 60) + secs + 2.0
-                    elif 'Please try again in' in error_str:
-                        match_s = re.search(r'Please try again in (\d+\.\d+)s', error_str)
-                        if match_s:
-                            wait_time = float(match_s.group(1)) + 2.0
-                    
-                    print(f"⚠️ API Limit Hit! Pausing {wait_time:.1f}s before retry {attempt+1}/{max_retries}...")
+                    # Pause briefly to let the quota bucket refill, but don't sleep forever
+                    print(f"⚠️ API Limit Hit! Pausing 10s before retry {attempt+1}/{max_retries}...")
                     import time
-                    time.sleep(wait_time)
+                    time.sleep(10.0)
                     continue
                 raise e
 
@@ -220,7 +211,7 @@ class FinancialAuditor:
         """
         Executes the Chain-of-Verification (CoVe) Two-Pass System.
         """
-        if not self.model:
+        if not self.client:
             return {}
             
         print("Executing CoVe Pass 1: Extraction...")
@@ -250,7 +241,7 @@ class FinancialAuditor:
         Takes all audited bills for the day and generates a unified 7-10 minute 
         YouTube script summarizing them. Returns a tuple (summary_data, anchor_name)
         """
-        if not self.model or not audits:
+        if not self.client or not audits:
             return {}, "None"
             
         import random
@@ -312,10 +303,10 @@ class FinancialAuditor:
         try:
             response = self._call_gemini_with_backoff(
                 prompt=prompt,
-                generation_config={
-                    "temperature": 0.4,
-                    "response_mime_type": "application/json",
-                },
+                config=self.types.GenerateContentConfig(
+                    temperature=0.4,
+                    response_mime_type="application/json",
+                ),
             )
             return json.loads(response.text.strip()), anchor['name']
         except Exception as e:
@@ -367,10 +358,10 @@ class FinancialAuditor:
             # V7 Standards: Strict determinism and strictly structured JSON response
             response = self._call_gemini_with_backoff(
                 prompt=prompt,
-                generation_config={
-                    "temperature": 0.0,
-                    "response_mime_type": "application/json",
-                },
+                config=self.types.GenerateContentConfig(
+                    temperature=0.0,
+                    response_mime_type="application/json",
+                ),
             )
             text = response.text.strip()
             if text.startswith("```json"):
@@ -412,10 +403,10 @@ class FinancialAuditor:
         try:
             response = self._call_gemini_with_backoff(
                 prompt=prompt,
-                generation_config={
-                    "temperature": 0.0,
-                    "response_mime_type": "application/json",
-                },
+                config=self.types.GenerateContentConfig(
+                    temperature=0.0,
+                    response_mime_type="application/json",
+                ),
             )
             text = response.text.strip()
             if text.startswith("```json"):
@@ -443,9 +434,9 @@ class FinancialAuditor:
         try:
             response = self._call_gemini_with_backoff(
                 prompt=prompt,
-                generation_config={
-                    "temperature": 0.0,
-                },
+                config=self.types.GenerateContentConfig(
+                    temperature=0.0,
+                ),
             )
             # Search grounding sometimes returns markdown code blocks
             text = response.text.strip()

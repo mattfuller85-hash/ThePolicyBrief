@@ -39,15 +39,6 @@
 - [ ] Dynamic Overlay: Branding changes from "Pork Alert" (Red) to "Official Brief" (Blue/Gold) based on audit findings.
 - [ ] Brand Voice: Unapologetic, transparent, and objective. "The People's Money."
 
-## Gemini API Quotas & Best Practices
-**IMPORTANT: Do not attempt to upgrade the project to use the new `google-genai` SDK.**
-During live testing on March 16, 2026, we discovered that the new API architecture completely retires the 1,500/day free-tier quota on older models (returning a `limit: 0` API error).
-Only the newest models (`gemini-2.5-flash` and `gemini-3-flash`) have *any* free quota on the new SDK, but Google has strictly capped them at **20 requests per day** on free accounts.
-
-To maintain the 1,500/day free-tier quota, **the project MUST use the legacy `google.generativeai` SDK** pointing to `model="gemini-1.5-flash"`. Do not alter this.
-
-If the script throws "No text generated", check the terminal logs directly (`python3 hourly_check.py`) to see if it's hitting a 429 quota exhaustion limit.
-
 ## Phase 5: Deploy (The "Trigger" Phase)
 - [ ] Initialize Git repository and push to GitHub.
 - [ ] Generate GitHub Action for the 3:00 AM Daily Run.
