@@ -165,7 +165,7 @@ class FinancialAuditor:
         for attempt in range(max_retries):
             try:
                 response = self.client.models.generate_content(
-                    model='gemini-flash-latest',
+                    model='gemini-2.5-flash-lite',
                     contents=prompt,
                     config=config,
                 )
