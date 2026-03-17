@@ -174,37 +174,85 @@ class FinancialAuditor:
     """The Investigative Radar: V7 Standard for zero-hallucination financial auditing."""
     
     def __init__(self, api_key: str):
-        self.api_key = api_key
+        self.api_keys = [k.strip() for k in api_key.split(",") if k.strip()]
+        self.current_key_index = 0
         try:
             from google import genai
             from google.genai import types
-            self.client = genai.Client(api_key=self.api_key)
+            self.genai = genai
             self.types = types
+            self._init_client()
         except ImportError:
             print("❌ google-genai is not installed. Please run `pip install google-genai`.")
             self.client = None
             self.types = None
 
-    def _call_gemini_with_backoff(self, prompt: str, config: Any, max_retries: int = 2) -> Any:
+    def _init_client(self):
+        if not self.api_keys:
+            self.client = None
+            return
+        
+        try:
+            current_key = self.api_keys[self.current_key_index]
+            self.client = self.genai.Client(api_key=current_key)
+            print(f"🔄 Initialized Gemini Client with key {self.current_key_index + 1}/{len(self.api_keys)}")
+        except Exception as e:
+            print(f"❌ Failed to initialize Gemini Client: {e}")
+            self.client = None
+
+    def _rotate_key(self) -> bool:
+        """Rotates to the next API key if available. Returns True if successful, False if all exhausted."""
+        if self.current_key_index + 1 < len(self.api_keys):
+            self.current_key_index += 1
+            print(f"⚠️ Quota Exhausted! Automatically rotating to backup API key {self.current_key_index + 1}/{len(self.api_keys)}...")
+            self._init_client()
+            return True
+        else:
+            print("❌ CRITICAL: ALL provided API keys have exhausted their daily quotas!")
+            return False
+
+    def _call_gemini_with_backoff(self, prompt: str, config: Any, max_retries: int = 3) -> Any:
         import time
         import re
         
-        for attempt in range(max_retries):
+        max_total_attempts = max_retries * len(self.api_keys)
+        
+        for attempt in range(max_total_attempts):
             try:
                 response = self.client.models.generate_content(
-                    model='gemini-2.0-flash',
+                    model='gemini-2.5-flash',
                     contents=prompt,
                     config=config,
                 )
                 return response
             except Exception as e:
                 error_str = str(e)
-                if attempt < max_retries - 1 and ('429' in error_str or 'RESOURCE_EXHAUSTED' in error_str):
-                    # Pause briefly to let the quota bucket refill, but don't sleep forever
-                    print(f"⚠️ API Limit Hit! Pausing 10s before retry {attempt+1}/{max_retries}...")
-                    import time
-                    time.sleep(10.0)
-                    continue
+                if '429' in error_str or 'RESOURCE_EXHAUSTED' in error_str:
+                    # Check if it is the hard daily limit specifically (20 or 0 requests)
+                    if 'generate_content_free_tier_requests, limit: 20' in error_str or 'generate_content_free_tier_requests, limit: 0' in error_str:
+                        if self._rotate_key():
+                            continue # Immediately retry with the new rotated key
+                        else:
+                            raise e # All keys are physically exhausted
+                    
+                    # Otherwise, it's a standard per-minute RPM rate limit, so pause and retry
+                    if attempt < max_total_attempts - 1:
+                        wait_time = 15.0 # Default wait
+                        
+                        # Parse dynamic retry wait time from Google's response if available
+                        match = re.search(r'Please retry in (\d+)m(\d+\.\d+)s', error_str)
+                        if match:
+                            mins = int(match.group(1))
+                            secs = float(match.group(2))
+                            wait_time = (mins * 60) + secs + 2.0
+                        elif 'Please retry in' in error_str:
+                            match_s = re.search(r'Please retry in (\d+\.\d+)s', error_str)
+                            if match_s:
+                                wait_time = float(match_s.group(1)) + 2.0
+                        
+                        print(f"⚠️ API RPM Rate Limit Hit! Pausing {wait_time:.1f}s before retry ({attempt+1})...")
+                        time.sleep(wait_time)
+                        continue
                 raise e
 
     def audit_bill(self, bill_text: str, bill_title: str, anchor: dict, sponsor_name: Optional[str] = None, bill_id: Optional[str] = None) -> dict:
