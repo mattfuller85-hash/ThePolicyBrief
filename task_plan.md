@@ -35,6 +35,7 @@
 ## Phase 4: The "Stylize" Phase (Aesthetics)
 - [ ] Web Hub: High-contrast, authoritative "Financial War Room" style.
 - [ ] Thumbnail Template: Consistent 70/30 split.
+- [ ] Fix the thumbnails for each video (user request).
 - [ ] Dynamic Overlay: Branding changes from "Pork Alert" (Red) to "Official Brief" (Blue/Gold) based on audit findings.
 - [ ] Brand Voice: Unapologetic, transparent, and objective. "The People's Money."
 
