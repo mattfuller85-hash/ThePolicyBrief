@@ -69,4 +69,5 @@ jobs:
           git config user.email "bot@thepolicybrief.com"
           git add web/src/data/ web/public/thumbnails/
           git diff --staged --quiet || git commit -m "🤖 Hourly audit update $(date +%Y-%m-%d-%H%M)"
+          git pull --rebase --autostash origin main
           git push
