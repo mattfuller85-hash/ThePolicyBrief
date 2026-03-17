@@ -34,8 +34,8 @@ class ThumbnailGenerator:
         bill_id = audit.get("bill_id", "BILL")
         fluff_detected = audit.get("fluff_detected", False)
         
-        # Dimensions for a standard 1080p YouTube Shorts Portrait Thumbnail
-        width, height = 1080, 1920
+        # Dimensions for a standard 1080p YouTube Thumbnail
+        width, height = 1920, 1080
         
         # 1. Base Image Layer
         # If we had a URL from Imagen, we'd fetch it here. For now, create a dark stylistic background.
