@@ -23,7 +23,6 @@ TARGET_EMAIL = "mattfuller85@gmail.com"
 # Process at most this many bills per 3-hour run to stay within
 # Gemini free-tier rate limits (15 RPM). 3 bills × 3 calls each = 9 calls.
 MAX_BILLS_PER_RUN = 1
-PACING_SECONDS = 10  # Reduced pacing to 10s logic to avoid long sleeps
 
 
 def load_known_ids() -> set:
@@ -177,11 +176,6 @@ def run_hourly_check():
         new_audits.append(audit_result)
         known_ids.add(bill_id)
 
-        # Pace between bills to respect Gemini free-tier rate limits
-        if i < len(bills_to_process) - 1:
-            print(f"⏳ Waiting {PACING_SECONDS}s before next bill (rate limit protection)...")
-            time.sleep(PACING_SECONDS)
-
     # --- Step 4: Send email notifications ---
     if resend_key and new_audits:
         delivery = ResendDelivery(resend_key)
@@ -192,9 +186,6 @@ def run_hourly_check():
             
             print(f"📧 Sending script email for {audit.get('bill_id')}...")
             delivery.deliver_short_script(audit, TARGET_EMAIL, thumbnail_path=thumb_path)
-            # Pace the emails to respect Resend 2 req/sec limit
-            if i < len(new_audits) - 1:
-                time.sleep(1.0)
 
     # --- Step 5: Persist results ---
     all_audits = existing_audits + new_audits

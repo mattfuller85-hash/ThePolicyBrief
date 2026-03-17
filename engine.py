@@ -200,9 +200,8 @@ class FinancialAuditor:
             except Exception as e:
                 error_str = str(e)
                 if attempt < max_retries - 1 and ('429' in error_str or 'RESOURCE_EXHAUSTED' in error_str):
-                    # Fail fast instead of long sleeps, just a brief 2s pause
-                    print(f"⚠️ API Limit Hit! Doing a quick 2s pause before retry {attempt+1}/{max_retries}...")
-                    time.sleep(2.0)
+                    # Fail fast instead of long sleeps
+                    print(f"⚠️ API Limit Hit! Retrying {attempt+1}/{max_retries} without wait...")
                     continue
                 raise e
 
@@ -226,10 +225,6 @@ class FinancialAuditor:
             if key in draft_data:
                 creative_fields[key] = draft_data.pop(key)
                 
-        import time
-        print("⏳ Waiting 5s between CoVe passes...")
-        time.sleep(5)
-            
         print("Executing CoVe Pass 2: The Prosecutor (Verification)...")
         verified_data = self._pass_2_verification(bill_text, draft_data)
         
