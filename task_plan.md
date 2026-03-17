@@ -43,6 +43,7 @@
 - [ ] Initialize Git repository and push to GitHub.
 - [ ] Generate GitHub Action for the 3:00 AM Daily Run.
 - [ ] Generate GitHub Action for the Friday Newsletter Blast.
+  - **NODE 20 DEPRECATION NOTE:** To suppress the Node.js 20 warnings in GitHub actions (for checkout@v4 and setup-python@v5), always add `FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"` to the main `env:` block. The `true` value MUST be wrapped in quotes so GitHub parses it as a string, preventing the deprecation warnings from persisting.
 - [ ] Deploy Astro Web Hub to Vercel.
 
 ## Phase 6: Tagging, Filtering & Discoverability
