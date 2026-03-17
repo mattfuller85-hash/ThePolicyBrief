@@ -11,6 +11,7 @@ import random
 import time
 from datetime import datetime, timezone
 from engine import CongressSource, FinancialAuditor, ResendDelivery, ANCHORS
+from thumbnail import ThumbnailGenerator
 from dotenv import load_dotenv
 
 
@@ -21,7 +22,6 @@ TARGET_EMAIL = "mattfuller85@gmail.com"
 
 # Process at most this many bills per 3-hour run to stay within
 # Gemini free-tier rate limits (15 RPM). 3 bills × 3 calls each = 9 calls.
-# Remaining new bills will be picked up by the next run.
 MAX_BILLS_PER_RUN = 1
 PACING_SECONDS = 120  # Increased pacing to exactly 2 minutes (120s) to avoid 429 rate limit issues
 
@@ -185,9 +185,13 @@ def run_hourly_check():
     # --- Step 4: Send email notifications ---
     if resend_key and new_audits:
         delivery = ResendDelivery(resend_key)
+        thumb_gen = ThumbnailGenerator()
         for i, audit in enumerate(new_audits):
+            print(f"🖼️ Generating thumbnail for {audit.get('bill_id')}...")
+            thumb_path = thumb_gen.generate_thumbnail(audit)
+            
             print(f"📧 Sending script email for {audit.get('bill_id')}...")
-            delivery.deliver_short_script(audit, TARGET_EMAIL)
+            delivery.deliver_short_script(audit, TARGET_EMAIL, thumbnail_path=thumb_path)
             # Pace the emails to respect Resend 2 req/sec limit
             if i < len(new_audits) - 1:
                 time.sleep(1.0)

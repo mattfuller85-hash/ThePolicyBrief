@@ -74,8 +74,8 @@ V7_SCHEMA = """
       "instagram": "String"
     }
   },
-  "heygen_short_script": "String (CRITICAL LENGTH REQUIREMENT: MUST be a 1 to 2 minute in-depth script with a STRICT MINIMUM of 300 words. Provide a highly detailed summary of the bill's actual effects and potential consequences. If the bill has NO spending (like a simple resolution), provide deep historical context, analyze the political posturing, explain who the sponsor is trying to appeal to, and detail the symbolic impact. MANDATORY OPENING: If a sponsor name is passed as input it MUST start EXACTLY: 'Proposed by {sponsor name}, Bill {Bill ID}, otherwise known as the \\'{Bill Title}\\'...'. If NO SPONSOR is provided, start exactly like: 'Bill {Bill ID}, otherwise known as the \\'{Bill Title}\\'...'. CRITICAL INSTRUCTION: You MUST explicitly declare the exact 'winners' and 'losers' of the bill, specifying which industries prospered/were damaged, or which special interest groups benefited/were slammed. You MUST explicitly state when the bill goes up for a vote (if known). You MUST explicitly state if this is the first time the bill has been proposed; if not, state when it failed previously and how many times it has been proposed. CRITICALLY: IF pork exists, quote the exact text from the bill. Maintain a highly professional tone without using AI-like words such as 'audit' or 'delve'.)",
-  "blog_post_markdown": "String (A comprehensive blog post MUST include these EXACT markdown headings: 1. 'The Sponsor' (Include Name, Political Affiliation, State, and Proposed Spending Amount). 2. 'Stated Purpose' (A summary of what the sponsor claims the bill is about). 3. 'What\\'s Really In It' (Detail the actual effects, unmask any fluff/pork, and IF pork exists, quote the exact text from the bill). 4. 'Winners and Losers' (Explicitly detail which exact industries/groups benefit and which lose). 5. 'Voting and Proposal History' (Explicitly detail when it goes up for a vote, if this is its first proposal, or how many times it failed previously). TONE RULE: DO NOT use AI-like words such as 'audit', 'my audit', 'delve', or 'examine'.)",
+  "heygen_short_script": "String (CRITICAL LENGTH REQUIREMENT: MUST be a 1.5 to 3 minute in-depth script with a STRICT MINIMUM of 350-450 words. Provide a highly detailed summary of the bill's actual effects and potential consequences. If the bill has NO spending (like a simple resolution), provide deep historical context. MANDATORY OPENING: If a sponsor name is passed as input it MUST start EXACTLY: 'Proposed by {sponsor name}, Bill {Bill ID}, otherwise known as the \\'{Bill Title}\\'...'. CRITICAL INSTRUCTION: You MUST explicitly declare the exact 'winners' and 'losers' of the bill, specifying which industries prospered/were damaged. TONE RULE: This show is NOT exclusively negative. If the proposed bill is high quality, tackles a good cause, or is generally beneficial without pork, you MUST highlight that affirmatively and praise the effort. You MUST explicitly state when the bill goes up for a vote (if known) and if this is the first time the bill has been proposed. CRITICALLY: IF pork exists, quote the exact text from the bill. Maintain a professional tone without using AI-like words such as 'audit' or 'delve'.)",
+  "blog_post_markdown": "String (A comprehensive blog post MUST include these EXACT markdown headings: 1. 'The Sponsor' (Include Name, Political Affiliation, State, and Proposed Spending Amount). 2. 'Stated Purpose' (A summary of what the sponsor claims the bill is about). 3. 'What\\'s Really In It' (Detail the actual effects, unmask any fluff/pork, and IF pork exists, quote the exact bill text. If the bill is high-quality and helpful to a certain cause, explicitly highlight those positives!). 4. 'Winners and Losers' (Explicitly detail which exact industries/groups benefit and which lose). 5. 'Voting and Proposal History' (Explicitly detail when it goes up for a vote, if this is its first proposal, or how many times it failed previously). TONE RULE: DO NOT use AI-like words such as 'audit', 'my audit', 'delve', or 'examine'.)",
   "youtube_metadata": {
     "title": "String (Catchy, engaging YouTube title under 70 characters)",
     "description": "String (Detailed but punchy description of the video, including a brief summary of the bill and asking viewers for their thoughts)",
@@ -271,7 +271,10 @@ class FinancialAuditor:
         # Build context from audits
         context = ""
         for i, audit in enumerate(audits):
+            sponsor = audit.get('sponsor_contact_info', {})
+            party = sponsor.get('political_affiliation', 'Unknown')
             context += f"--- BILL {i+1}: {audit.get('bill_id')} ---\n"
+            context += f"Sponsor: {sponsor.get('sponsor_name', 'Unknown')} ({party})\n"
             context += f"Total Spending: ${audit.get('total_spending', 0):,}\n"
             context += f"Pork Spending: ${audit.get('pork_barrel_spending', 0):,}\n"
             context += f"Context: {audit.get('historical_context', 'N/A')}\n"
@@ -308,7 +311,8 @@ class FinancialAuditor:
           "title": "String (Catchy YouTube title)",
           "description": "String (YouTube description)",
           "tags": ["String", "String"],
-          "script_body": "String (The full 7-10 minute script)"
+          "script_body": "String (The full 7-10 minute script)",
+          "blog_post_markdown": "String (A comprehensive daily summary blog post MUST include: 1. A summary of the potential winners and losers of the day. 2. A breakdown of all bills proposed. 3. Total proposed dollar amounts for the day. 4. Total pork for the day. 5. Explicitly state the amount of Democrat vs Republican bills proposed. 6. Explicitly state which party (Democrat or Republican) proposed the most money to be spent and which party had the most pork proposed today in total.)"
         }}
         """
         try:
@@ -497,7 +501,7 @@ class ResendDelivery:
         self.api_key = api_key
         resend.api_key = api_key
 
-    def deliver_short_script(self, audit: Dict[str, Any], to_email: str) -> bool:
+    def deliver_short_script(self, audit: Dict[str, Any], to_email: str, thumbnail_path: str = None) -> bool:
         """Emails a single generated short script instantly."""
         if not self.api_key:
             print("❌ Resend API key missing. Cannot deliver script.")
@@ -526,12 +530,23 @@ class ResendDelivery:
         """
         
         try:
-            r = resend.Emails.send({
+            email_params = {
                 "from": "The Policy Brief <onboarding@resend.dev>",
                 "to": to_email,
                 "subject": f"New Script: {audit.get('bill_id')} - {title}",
                 "html": html_content
-            })
+            }
+            if thumbnail_path and os.path.exists(thumbnail_path):
+                import os
+                with open(thumbnail_path, "rb") as f:
+                    file_data = f.read()
+                email_params["attachments"] = [
+                    {
+                        "filename": os.path.basename(thumbnail_path),
+                        "content": list(file_data)
+                    }
+                ]
+            r = resend.Emails.send(email_params)
             print(f"✅ Delivered Short Script to {to_email}")
             return True
         except Exception as e:

@@ -51,7 +51,7 @@ def fetch_recent_videos(youtube, channel_id: str, max_results: int = 10):
         
     return video_data
 
-def backwash_urls_to_web_hub(video_data: list, web_data_path: str = "web/src/data/audits.json"):
+def backwash_urls_to_web_hub(video_data: list, web_data_path: str = "web/src/data/daily_audits.json"):
     """
     Search our local web data JSON for bills that match the YouTube videos.
     Update the local JSON with the YouTube URL.
