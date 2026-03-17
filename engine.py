@@ -165,7 +165,7 @@ class FinancialAuditor:
         for attempt in range(max_retries):
             try:
                 response = self.client.models.generate_content(
-                    model='gemini-2.5-flash',
+                    model='gemini-flash-latest',
                     contents=prompt,
                     config=config,
                 )
@@ -201,6 +201,13 @@ class FinancialAuditor:
         if not draft_data:
             return {}
             
+        # Secure creative fields before Pass 2
+        creative_fields = {}
+        target_keys = ["heygen_short_script", "blog_post_markdown", "youtube_metadata", "heygen_long_script"]
+        for key in target_keys:
+            if key in draft_data:
+                creative_fields[key] = draft_data.pop(key)
+                
         import time
         print("⏳ Waiting 5s between CoVe passes...")
         time.sleep(5)
@@ -208,6 +215,10 @@ class FinancialAuditor:
         print("Executing CoVe Pass 2: The Prosecutor (Verification)...")
         verified_data = self._pass_2_verification(bill_text, draft_data)
         
+        # Restore creative fields
+        for key, value in creative_fields.items():
+            verified_data[key] = value
+            
         return verified_data
 
     def generate_daily_summary_script(self, audits: List[Dict[str, Any]]) -> tuple[Dict[str, Any], str]:
