@@ -257,9 +257,12 @@ class FinancialAuditor:
         Add a joke or human-like transition occasionally so it sounds like a real person talking to actual people.
         
         CRITICAL RULES:
-        1. Do NOT just regurgitate the individual shorts; weave all these bills together into a cohesive, unique broadcast.
-        2. Give a summary of all of them together, highlighting the biggest themes, the worst pork, and the overall winners and losers of the day.
-        3. CRITICALLY: Whenever you mention or discuss "pork" or "fluff" from a bill, you MUST quote the exact text from the bill that describes that pork.
+        1. MUST BE 7 TO 10 MINUTES LONG WHEN READ ALOUD. This is a deep-dive long-form video.
+        2. Give a summary of all bills together, highlighting the biggest themes, the worst pork, and the overall winners and losers of the day.
+        3. You MUST explicitly state the TOTAL amount of money proposed during the day (add all total spending together).
+        4. You MUST explicitly state the TOTAL amount of pork barrel spending found today (add all pork together).
+        5. For EACH bill, you must explain: What it was meant to do, Who sponsored it, and what the actual effects are.
+        6. CRITICALLY: Whenever you mention or discuss "pork" or "fluff" from a bill, you MUST quote the exact text from the bill that describes that pork.
         
         MANDATORY INTRO: You MUST start the script exactly like this (filling in the bill names):
         "Hello, I'm {clean_anchor_name} with The Policy Brief, welcome. Today's bills are [Bill 1], [Bill 2], etc."
