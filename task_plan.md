@@ -63,6 +63,18 @@
 - [ ] **X Developer API Setup**
   - [ ] Create X Developer account with Elevated access for posting.
   - [ ] Add `X_API_KEY`, `X_API_SECRET`, `X_ACCESS_TOKEN`, `X_ACCESS_SECRET` to GitHub Secrets.
+- [ ] **Gemini API Quotas & Best Practices**
+  **IMPORTANT: The new `google-genai` SDK exposes the Free Tier rate limits strictly.**
+  During live testing on March 16, 2026, we confirmed that Free Tier API keys trigger a hard `limit: 0` error on older models like `gemini-2.0-flash`, and hit a hard 20 Requests Per Day limit on the newest `gemini-2.5-flash` model.
+
+  **Multi-Key Cycling (400+ Requests/Day):**
+  The `engine.py` script has been upgraded to accept a comma-separated list of multiple API keys in the `.env` file (e.g., `GEMINI_API_KEY="key1,key2,key3"`). When one key hits its 20-request limit, the engine automatically rotates to the next key without failing. 
+
+  **CRITICAL MULTI-KEY RULE:** 
+  Google enforces the 20-request limit *per Google Cloud Project*, not per key string. If you generate 20 keys from the exact same Google Cloud Project, they will instantly share the same 20-request limit. 
+  To successfully get 400 requests per day, you **MUST** create 20 completely separate Google Cloud Projects in the developer console, and generate 1 API key from each project.
+
+  If the script exhausts all provided keys, it will throw a `CRITICAL: ALL provided API keys have exhausted their daily quotas!` error in the GitHub Actions terminal logs.
 - [ ] **Auto-Post Pipeline**
   - [ ] After YouTube video is live and blog post is published, auto-generate an X/Twitter post.
   - [ ] Post the **raw video natively to X** (not just a YouTube link) for maximum reach and monetization.
