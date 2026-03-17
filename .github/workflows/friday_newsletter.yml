@@ -8,6 +8,7 @@ on:
 
 env:
   RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
   send-newsletter:
