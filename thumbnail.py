@@ -24,22 +24,12 @@ class ThumbnailGenerator:
                 # Try generic sans-serif
                 return ImageFont.truetype("Arial.ttf", size)
             except OSError:
-                # Download a heavy font dynamically for GitHub Actions (Ubuntu/Linux)
-                import requests
-                font_path = "/tmp/Roboto-Black.ttf"
-                if not os.path.exists(font_path):
-                    try:
-                        print("Downloading Roboto-Black font for Linux compatibility...")
-                        response = requests.get("https://github.com/google/fonts/raw/main/apache/robotoblack/Roboto-Black.ttf", timeout=10)
-                        if response.status_code == 200:
-                            with open(font_path, "wb") as f:
-                                f.write(response.content)
-                    except Exception as e:
-                        print(f"⚠️ Failed to download font: {e}")
-                
+                # Use bundled physical font for GitHub Actions (Ubuntu/Linux)
+                font_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "Roboto-Black.ttf")
                 try:
                     return ImageFont.truetype(font_path, size)
-                except OSError:
+                except OSError as e:
+                    print(f"⚠️ bundled font failed: {e}")
                     return ImageFont.load_default()
 
     def generate_thumbnail(self, audit: Dict[str, Any]) -> str:
@@ -48,26 +38,53 @@ class ThumbnailGenerator:
         Applies a 70/30 or 50/50 split overlay with high-contrast text ("Financial War Room" style).
         """
         bill_id = audit.get("bill_id", "BILL")
+        bill_title = audit.get("title", bill_id)
         fluff_detected = audit.get("fluff_detected", False)
         
         # Dimensions for a standard 1080p YouTube Thumbnail
         width, height = 1920, 1080
         
         # 1. Base Image Layer
-        # If we had a URL from Imagen, we'd fetch it here. For now, create a dark stylistic background.
-        base_img_url = audit.get("youtube_metadata", {}).get("thumbnail_url")
+        # Generate a high-quality cinematic background using Google Imagen 3
         base_image = None
         
-        if base_img_url:
-            try:
-                response = requests.get(base_img_url)
-                if response.status_code == 200:
-                    base_image = Image.open(BytesIO(response.content)).convert("RGBA")
-                    # Resize and crop to fill 1920x1080
-                    base_image = base_image.resize((width, height))
-            except Exception as e:
-                print(f"Failed to fetch base image: {e}")
+        try:
+            from google import genai
+            from google.genai import types
+            
+            api_key = os.environ.get("GEMINI_API_KEY")
+            if api_key:
+                client = genai.Client(api_key=api_key)
                 
+                # We use the AI's generated YouTube description to style the background art
+                script_desc = audit.get("youtube_metadata", {}).get("description", "A legislative bill.")
+                
+                img_prompt = (
+                    f"A cinematic, dramatic, high-quality photograph or digital art without any text. "
+                    f"This image is a YouTube thumbnail background for a video about the US Congress bill titled '{bill_title}'. "
+                    f"Theme and context: {script_desc}. "
+                    f"Must be visually striking, dark and moody lighting, no words or text anywhere."
+                )
+                
+                print(f"🎨 Generating Imagen 3 background...")
+                
+                result = client.models.generate_images(
+                    model='imagen-3.0-generate-002',
+                    prompt=img_prompt,
+                    config=types.GenerateImagesConfig(
+                        number_of_images=1,
+                        output_mime_type="image/jpeg",
+                        aspect_ratio="16:9"
+                    )
+                )
+                
+                if result.generated_images:
+                    image_bytes = result.generated_images[0].image.image_bytes
+                    base_image = Image.open(BytesIO(image_bytes)).convert("RGBA")
+                    base_image = base_image.resize((width, height))
+        except Exception as e:
+            print(f"⚠️ Failed to generate Imagen 3 background: {e}")
+            
         if not base_image:
             # Fallback War Room background: Dark slate with a subtle tint
             base_bg_color = (20, 20, 25, 255) # Dark slate
@@ -113,7 +130,7 @@ class ThumbnailGenerator:
         display_bill_id = bill_id.replace(" ", "")
         if " - " in audit.get("historical_context", "")[:30]:
             # Try to grab a descriptive nickname from the context
-            nickname = audit.get("historical_context").split(" - ")[0]
+            nickname = audit.get("historical_context", "").split(" - ")[0]
             if len(nickname) < 40:
                 display_bill_id = f"{display_bill_id} - {nickname}"
         
