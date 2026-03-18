@@ -20,6 +20,8 @@ env:
   GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
   RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
   CONGRESS_API_KEY: ${{ secrets.CONGRESS_API_KEY }}
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+  ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION: true
 
 permissions:
   contents: write
@@ -31,15 +33,11 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4.2.2
-        env:
-          FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
       
       - name: Set up Python 3.13
         uses: actions/setup-python@v5.4.0
-        env:
-          FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
         with:
           python-version: '3.13'
       
