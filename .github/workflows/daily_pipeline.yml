@@ -54,29 +54,11 @@ jobs:
           YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
           YOUTUBE_CHANNEL_ID: ${{ secrets.YOUTUBE_CHANNEL_ID }}
       
-      - name: Generate Thumbnails (if new audits were added)
-        env:
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-        run: |
-          python -c "
-          import json, os
-          from thumbnail import ThumbnailGenerator
-          gen = ThumbnailGenerator()
-          data_path = 'web/src/data/daily_audits.json'
-          if os.path.exists(data_path):
-              with open(data_path) as f:
-                  audits = json.load(f)
-              for audit in audits:
-                  gen.generate_thumbnail(audit)
-          else:
-              print('No audit data to generate thumbnails for.')
-          "
-      
-      - name: Commit updated data & thumbnails
+      - name: Commit updated data
         run: |
           git config user.name "The Policy Brief Bot"
           git config user.email "bot@thepolicybrief.com"
-          git add web/src/data/ web/public/thumbnails/
+          git add web/src/data/
           git diff --staged --quiet || git commit -m "🤖 Hourly audit update $(date +%Y-%m-%d-%H%M)"
           git pull --rebase --autostash origin main
           git push
