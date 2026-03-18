@@ -154,8 +154,8 @@ def run_hourly_check():
         anchor = random.choice(ANCHORS)
         audit_result = auditor.audit_bill(summary_text, bill_title, anchor, sponsor_name=sponsor_name, bill_id=bill_id)
 
-        if not isinstance(audit_result, dict):
-            print(f"⚠️  Audit returned non-dict for {bill_id}. Skipping.")
+        if not isinstance(audit_result, dict) or "heygen_short_script" not in audit_result or not audit_result["heygen_short_script"]:
+            print(f"⚠️  Audit result is empty or invalid for {bill_id} (API failure). Skipping.")
             continue
 
         # Merge metadata
