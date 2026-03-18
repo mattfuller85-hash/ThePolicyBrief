@@ -1,6 +1,4 @@
 ---
-name: clean_workspace
-title: Clean Workspace
 description: Close all VS Code editor tabs and open task_plan.md
 ---
 
@@ -15,5 +13,5 @@ osascript -e 'tell application "Visual Studio Code" to activate' -e 'tell applic
 2. Open `task_plan.md` to start with a completely clean slate.
 // turbo
 ```bash
-code "/Users/matt/Documents/AntiGravity/The Policy Brief/task_plan.md"
+code "/Users/matt/Documents/AntiGravity/ThePolicyBrief/task_plan.md"
 ```
