@@ -11,7 +11,6 @@ import random
 import time
 from datetime import datetime, timezone
 from engine import CongressSource, FinancialAuditor, ResendDelivery, ANCHORS
-from thumbnail import ThumbnailGenerator
 from dotenv import load_dotenv
 
 
@@ -20,8 +19,8 @@ KNOWN_IDS_PATH = os.path.join(DATA_DIR, "known_bill_ids.json")
 AUDITS_PATH = os.path.join(DATA_DIR, "daily_audits.json")
 TARGET_EMAIL = "mattfuller85@gmail.com"
 
-# Process at most this many bills per 3-hour run to stay within
-# Gemini free-tier rate limits (15 RPM). 3 bills × 3 calls each = 9 calls.
+# Process at most this many bills per 5-minute run to stay within
+# Gemini free-tier rate limits (15 RPM).
 MAX_BILLS_PER_RUN = 1
 
 
@@ -55,7 +54,7 @@ def save_audits(audits: list):
         json.dump(audits, f, indent=2)
 
 
-def run_hourly_check():
+def run_5min_check():
     load_dotenv()
 
     congress_key = os.getenv("CONGRESS_API_KEY")
@@ -96,7 +95,7 @@ def run_hourly_check():
         print(f"✅ No new bills found. All {len(bills)} fetched bills already processed.")
         return
 
-    # Cap to MAX_BILLS_PER_RUN per run; the rest will be caught next hour
+    # Cap to MAX_BILLS_PER_RUN per run; the rest will be caught next run
     bills_to_process = new_bills[:MAX_BILLS_PER_RUN]
     remaining = len(new_bills) - len(bills_to_process)
     print(f"🆕 Found {len(new_bills)} new bill(s). Processing {len(bills_to_process)} this run.")
@@ -117,8 +116,17 @@ def run_hourly_check():
 
         print(f"\n--- Processing [{bill_id}] {bill_title} ---")
 
-        # Fetch bill summary text from Congress API
-        summary_text = source.fetch_bill_summary(congress_num, bill_type, bill_number)
+        # Fetch full bill details to get the sponsors
+        bill_details = source.fetch_bill_details(congress_num, bill_type, bill_number)
+        
+        # Try to fetch full formatted text first
+        bill_text = source.fetch_bill_text(congress_num, bill_type, bill_number)
+        
+        if not bill_text:
+            print(f"⚠️  No full text available for {bill_id}. Falling back to summary.")
+            bill_text = source.fetch_bill_summary(congress_num, bill_type, bill_number)
+        else:
+            print(f"✅ Full text retrieved for {bill_id}.")
 
         # Fetch bill actions & related bills for history
         actions = source.fetch_bill_actions(congress_num, bill_type, bill_number)
@@ -137,22 +145,22 @@ def run_hourly_check():
         else:
             history_context += "Previously Proposed: No (This appears to be the first time this bill is proposed).\n"
 
-        if not summary_text:
-            # Fall back to just using the title if no summary is available
-            print(f"⚠️  No summary text available for {bill_id}. Using title only.")
-            summary_text = f"Bill titled: {bill_title}. No detailed summary text is available from Congress.gov at this time."
+        if not bill_text:
+            # Fall back to just using the title if no text or summary is available
+            print(f"⚠️  No text or summary available for {bill_id}. Using title only.")
+            bill_text = f"Bill titled: {bill_title}. No detailed text or summary is available from Congress.gov at this time."
             
-        summary_text += history_context
+        bill_text += history_context
 
-        # Extract Sponsor Name
+        # Extract Sponsor Name from full details
         sponsor_name = None
-        sponsors = bill.get("sponsors", [])
+        sponsors = bill_details.get("sponsors", [])
         if sponsors:
-            sponsor_name = sponsors[0].get("name")
+            sponsor_name = sponsors[0].get("fullName")
 
         # Run the CoVe two-pass audit (this also generates the blog post + YouTube script)
         anchor = random.choice(ANCHORS)
-        audit_result = auditor.audit_bill(summary_text, bill_title, anchor, sponsor_name=sponsor_name, bill_id=bill_id)
+        audit_result = auditor.audit_bill(bill_text, bill_title, anchor, sponsor_name=sponsor_name, bill_id=bill_id)
 
         if not isinstance(audit_result, dict) or "heygen_short_script" not in audit_result or not audit_result["heygen_short_script"]:
             print(f"⚠️  Audit result is empty or invalid for {bill_id} (API failure). Skipping.")
@@ -166,7 +174,6 @@ def run_hourly_check():
         audit_result["processed_at"] = datetime.now(timezone.utc).isoformat()
 
         # Sponsor Dox
-        sponsor_name = bill.get("sponsors", [{}])[0].get("name", None) if bill.get("sponsors") else None
         if not sponsor_name:
             # Try the latestAction or title for a hint
             sponsor_name = audit_result.get("sponsor_contact_info", {}).get("sponsor_name")
@@ -179,20 +186,9 @@ def run_hourly_check():
     # --- Step 4: Send email notifications ---
     if resend_key and new_audits:
         delivery = ResendDelivery(resend_key)
-        thumb_gen = ThumbnailGenerator()
         for i, audit in enumerate(new_audits):
-            print(f"🖼️ Generating thumbnail for {audit.get('bill_id')}...")
-            thumb_path = thumb_gen.generate_thumbnail(audit)
-            
-            # CRITICAL FIX: The Gemini CoVe prompt hallucinates "example.com" for the 
-            # thumbnail_url. We must overwrite it with the actual local path we just generated.
-            filename = os.path.basename(thumb_path)
-            if "youtube_metadata" not in audit:
-                audit["youtube_metadata"] = {}
-            audit["youtube_metadata"]["thumbnail_url"] = f"/thumbnails/{filename}"
-            
             print(f"📧 Sending script email for {audit.get('bill_id')}...")
-            delivery.deliver_short_script(audit, TARGET_EMAIL, thumbnail_path=thumb_path)
+            delivery.deliver_short_script(audit, TARGET_EMAIL, thumbnail_path=None)
 
     # --- Step 5: Persist results ---
     all_audits = existing_audits + new_audits
@@ -210,4 +206,4 @@ def run_hourly_check():
 
 
 if __name__ == "__main__":
-    run_hourly_check()
+    run_5min_check()

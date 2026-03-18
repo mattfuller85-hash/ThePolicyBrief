@@ -74,8 +74,8 @@ V7_SCHEMA = """
       "instagram": "String"
     }
   },
-  "heygen_short_script": "String (CRITICAL LENGTH REQUIREMENT: MUST be a 5 to 7 minute in-depth script with a STRICT MINIMUM of 800-1000 words. CRITICAL TONE REQUIREMENT: You MUST explain the bill and its effects as if you are explaining it to a 5-year-old child—keep concepts incredibly simple, engaging, and easy to understand. MANDATORY OPENING: If a sponsor name is passed as input it MUST start EXACTLY: 'Proposed by {sponsor name}, Bill {Bill ID}, otherwise known as the \\'{Bill Title}\\'...'. MANDATORY CONTENT CHECKLIST: 1. Explain what is GOOD about the bill (if anything). 2. Explicitly state HOW MUCH MONEY is being proposed. 3. Explicitly state WHICH SPECIAL INTEREST GROUPS will get the money, if any. 4. If there is any pork or fluff, expose ALL of the JUICY DETAILS. 5. Explicitly state who is sponsoring the bill, where they are from, and whether they are a Democrat or Republican. 6. Explicitly declare the exact 'winners' and 'losers' of the bill. 7. Explicitly state if this bill has ever been brought up and voted on before. SHOW NAME MANDATE: The name of the show is 'The Policy Brief'. You must NEVER refer to the show as 'Capitol Watchdog' or 'Capitol Watch'. CRITICALLY: IF pork exists, quote the exact text from the bill. Maintain your engaging ELI5 tone without using AI-like words such as 'audit' or 'delve'.)",
-  "blog_post_markdown": "String (A comprehensive blog post tailored for the general public. MUST include these EXACT markdown headings: 1. 'The Sponsor' (Include Name, Democrat/Republican, State, and Proposed Spending Amount). 2. 'What\\'s Good About It' (Explain it simply like to a 5-year-old, highlighting positives). 3. 'The Financials & Special Interests' (Explicitly detail total money and which exact interest groups get it). 4. 'The Juicy Details: Pork & Fluff' (Unmask any fluff/pork, and IF pork exists, quote the exact bill text). 5. 'Winners and Losers' (Explicitly detail who benefits and who gets hurt). 6. 'Voting and Proposal History' (Explicitly detail if it has ever been brought up and voted on before). TONE RULE: Keep explanations extremely simple and DO NOT use AI-like words such as 'audit', 'my audit', 'delve', or 'examine'.)",
+  "heygen_short_script": "String (CRITICAL LENGTH REQUIREMENT: MUST be a 5 to 7 minute in-depth script with a STRICT MINIMUM of 800-1000 words. CRITICAL TONE REQUIREMENT: You MUST explain the bill and its effects as if you are explaining it to a 5-year-old child—keep concepts incredibly simple, engaging, and easy to understand. TONE ADJUSTMENT: Do not use too much slang. Make it sound human-like and semi-professional. You can cut a joke from time to time, but remain grounded. MANDATORY OPENING: If a sponsor name is passed as input it MUST start EXACTLY: 'Proposed by {sponsor name}, Bill {Bill ID}, otherwise known as the \\'{Bill Title}\\'...'. MANDATORY CONTENT CHECKLIST: 1. Explain what is GOOD about the bill (if anything). 2. Explicitly state HOW MUCH MONEY is being proposed. 3. Explicitly state WHICH SPECIAL INTEREST GROUPS will get the money, if any. 4. If there is any pork or fluff, expose ALL of the JUICY DETAILS. 5. Explicitly state who is sponsoring the bill, where they are from, and whether they are a Democrat or Republican. 6. Explicitly declare the exact 'winners' and 'losers' of the bill. 7. Explicitly state if this bill has ever been brought up and voted on before. SHOW NAME MANDATE: The name of the show is 'The Policy Brief'. You must NEVER refer to the show as 'Capitol Watchdog' or 'Capitol Watch'. CRITICALLY: IF pork exists, quote the exact text from the bill. Maintain your engaging ELI5 tone without using AI-like words such as 'audit' or 'delve'.)",
+  "blog_post_markdown": "String (A comprehensive blog post tailored for the general public. MUST include these EXACT markdown headings: 1. 'The Sponsor' (Include Name, Democrat/Republican, State, and Proposed Spending Amount). 2. 'What\\'s Good About It' (Explain it simply like to a 5-year-old, highlighting positives). 3. 'The Financials & Special Interests' (Explicitly detail total money and which exact interest groups get it). 4. 'The Juicy Details: Pork & Fluff' (Unmask any fluff/pork, and IF pork exists, quote the exact bill text). 5. 'Winners and Losers' (Explicitly detail who benefits and who gets hurt). 6. 'Voting and Proposal History' (Explicitly detail if it has ever been brought up and voted on before). TONE RULE: Keep explanations extremely simple but HUMAN and SEMI-PROFESSIONAL. Avoid heavy slang, but an occasional joke is fine. DO NOT use AI-like words such as 'audit', 'my audit', 'delve', or 'examine'.)",
   "youtube_metadata": {
     "title": "String (Catchy, engaging YouTube title under 70 characters)",
     "description": "String (Detailed but punchy description of the video, including a brief summary of the bill and asking viewers for their thoughts)",
@@ -169,6 +169,63 @@ class CongressSource:
     def get_bill_id(self, bill: Dict[str, Any]) -> str:
         """Generate a unique bill ID string from a Congress API bill object."""
         return f"{bill.get('type', 'UNK')}{bill.get('number', 0)}"
+
+    def fetch_bill_details(self, congress: int, bill_type: str, bill_number: int) -> Dict[str, Any]:
+        """Fetch the full bill details, which includes sponsors."""
+        url = (
+            f"{self.base_url}/bill/{congress}/{bill_type.lower()}/{bill_number}"
+            f"?api_key={self.api_key}"
+        )
+        try:
+            import requests
+            response = requests.get(url)
+            response.raise_for_status()
+            return response.json().get("bill", {})
+        except Exception as e:
+            print(f"❌ Error fetching bill details for {bill_number}: {e}")
+            return {}
+
+    def fetch_bill_text(self, congress: int, bill_type: str, bill_number: int) -> Optional[str]:
+        """Fetch the full formatted text of the bill."""
+        url = (
+            f"{self.base_url}/bill/{congress}/{bill_type.lower()}/{bill_number}"
+            f"/text?api_key={self.api_key}&format=json"
+        )
+        try:
+            import requests
+            response = requests.get(url)
+            response.raise_for_status()
+            data = response.json()
+            
+            text_versions = data.get("textVersions", [])
+            if not text_versions:
+                return None
+                
+            formats = text_versions[0].get("formats", [])
+            
+            # Prefer Formatted Text, fallback to others
+            target_url = None
+            for fmt in formats:
+                if fmt.get('type') == 'Formatted Text':
+                    target_url = fmt.get('url')
+                    break
+            
+            if not target_url and formats:
+                target_url = formats[0].get('url')
+                
+            if target_url:
+                content_resp = requests.get(target_url)
+                content_resp.raise_for_status()
+                # Try to extract actual text (primitive HTML stripping since it's <pre> wrapped mostly)
+                import re
+                raw = content_resp.text
+                return re.sub(r"<[^>]+>", "", raw).strip()
+            
+            return None
+                
+        except Exception as e:
+            print(f"❌ Error fetching bill text for {bill_number}: {e}")
+            return None
 
 class FinancialAuditor:
     """The Investigative Radar: V7 Standard for zero-hallucination financial auditing."""
@@ -278,7 +335,7 @@ class FinancialAuditor:
                 creative_fields[key] = draft_data.pop(key)
                 
         print("Executing CoVe Pass 2: The Prosecutor (Verification)...")
-        verified_data = self._pass_2_verification(bill_text, draft_data)
+        verified_data = self._pass_2_verification(bill_text, draft_data, sponsor_name=sponsor_name, bill_title=bill_title, bill_id=bill_id)
         
         # Restore creative fields
         for key, value in creative_fields.items():
@@ -430,15 +487,21 @@ class FinancialAuditor:
             print(f"--- RAW TEXT THAT FAILED JSON DECODING ---\n{text if text is not None else 'No text generated'}\n------------------------------------------")
             return {}
 
-    def _pass_2_verification(self, source_text: str, draft_data: Dict[str, Any]) -> Dict[str, Any]:
+    def _pass_2_verification(self, source_text: str, draft_data: Dict[str, Any], sponsor_name: Optional[str] = None, bill_title: Optional[str] = None, bill_id: Optional[str] = None) -> Dict[str, Any]:
         """
         Second pass: Acts as a 'Prosecutor'. Must verify every claim in draft_data against the source_text.
         If a claim or financial figure is NOT explicitly in the source text, it is DELETED.
         """
+        context_block = f"Bill ID: {bill_id}\nBill Title: {bill_title}\nSponsor: {sponsor_name}\n\n"
+        
         prompt = f"""
         You are a Prosecutor Auditor. Your job is to verify the following drafted JSON data against the 
         source bill text. Ensure strictly zero hallucinations. If a dollar amount or claim in the draft 
         data is not explicitly present in the source text, remove it or set it to 0/False.
+        
+        CRITICAL EXCEPTION: The Sponsor Name, Bill Title, and Bill ID may not be fully spelled out in the raw bill text body, 
+        but they are considered EXPLICITLY VERIFIED if they match the context block provided below. DO NOT delete the sponsor name if it matches this context.
+        CRITICAL EXCEPTION 2: Dollar amounts in total_spending, legitimate_spending, and pork_barrel_spending are often converted from words in the text to numbers in JSON (e.g., 'fifty million' -> 50000000). DO NOT set them to 0 if the equivalent amount is present in the text!
         
         CRITICAL RULE: Do NOT remove, alter, or truncate the "heygen_short_script", "blog_post_markdown", 
         or "youtube_metadata" fields. These are creative generations based on the data and cannot be 
@@ -449,6 +512,9 @@ class FinancialAuditor:
         
         Draft Data:
         {json.dumps(draft_data, indent=2)}
+        
+        --- CONTEXT BLOCK (VERIFIED GROUND TRUTH) ---
+        {context_block}
         
         Source Bill Text:
         {source_text}
@@ -490,6 +556,7 @@ class FinancialAuditor:
                 prompt=prompt,
                 config=self.types.GenerateContentConfig(
                     temperature=0.0,
+                    tools=[{"google_search": {}}]
                 ),
             )
             # Search grounding sometimes returns markdown code blocks

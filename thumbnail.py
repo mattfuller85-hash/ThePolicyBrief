@@ -13,24 +13,18 @@ class ThumbnailGenerator:
             os.makedirs(self.output_dir)
 
     def _get_font(self, size: int) -> ImageFont.FreeTypeFont:
-        """Attempt to load a thick, high-impact font suitable for YouTube."""
-        # For cross-platform compatibility without manual font downloads,
-        # we try standard system fonts or fallback to default
+        """Attempt to load the physical, bundled Roboto-Black font for guaranteed consistency."""
         try:
-            # Try Mac impact font
-            return ImageFont.truetype("/System/Library/Fonts/Supplemental/Impact.ttf", size)
-        except OSError:
+            # Use bundled physical font for all environments (Windows/Mac/Linux)
+            font_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "Roboto-Black.ttf")
+            return ImageFont.truetype(font_path, size)
+        except OSError as e:
+            print(f"⚠️ bundled font failed: {e}")
             try:
-                # Try generic sans-serif
-                return ImageFont.truetype("Arial.ttf", size)
+                # Try Mac impact font as a secondary fallback
+                return ImageFont.truetype("/System/Library/Fonts/Supplemental/Impact.ttf", size)
             except OSError:
-                # Use bundled physical font for GitHub Actions (Ubuntu/Linux)
-                font_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "Roboto-Black.ttf")
-                try:
-                    return ImageFont.truetype(font_path, size)
-                except OSError as e:
-                    print(f"⚠️ bundled font failed: {e}")
-                    return ImageFont.load_default()
+                return ImageFont.load_default()
 
     def generate_thumbnail(self, audit: Dict[str, Any]) -> str:
         """
