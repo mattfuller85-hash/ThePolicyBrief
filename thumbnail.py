@@ -25,13 +25,17 @@ class ThumbnailGenerator:
                 return ImageFont.truetype("Arial.ttf", size)
             except OSError:
                 # Download a heavy font dynamically for GitHub Actions (Ubuntu/Linux)
-                import urllib.request
-                font_path = "/tmp/Impact.ttf"
+                import requests
+                font_path = "/tmp/Roboto-Black.ttf"
                 if not os.path.exists(font_path):
                     try:
-                        urllib.request.urlretrieve("https://github.com/google/fonts/raw/main/apache/robotoblack/Roboto-Black.ttf", font_path)
-                    except Exception:
-                        pass
+                        print("Downloading Roboto-Black font for Linux compatibility...")
+                        response = requests.get("https://github.com/google/fonts/raw/main/apache/robotoblack/Roboto-Black.ttf", timeout=10)
+                        if response.status_code == 200:
+                            with open(font_path, "wb") as f:
+                                f.write(response.content)
+                    except Exception as e:
+                        print(f"⚠️ Failed to download font: {e}")
                 
                 try:
                     return ImageFont.truetype(font_path, size)
