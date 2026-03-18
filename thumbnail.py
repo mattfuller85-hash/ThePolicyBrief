@@ -24,7 +24,19 @@ class ThumbnailGenerator:
                 # Try generic sans-serif
                 return ImageFont.truetype("Arial.ttf", size)
             except OSError:
-                return ImageFont.load_default()
+                # Download a heavy font dynamically for GitHub Actions (Ubuntu/Linux)
+                import urllib.request
+                font_path = "/tmp/Impact.ttf"
+                if not os.path.exists(font_path):
+                    try:
+                        urllib.request.urlretrieve("https://github.com/google/fonts/raw/main/apache/robotoblack/Roboto-Black.ttf", font_path)
+                    except Exception:
+                        pass
+                
+                try:
+                    return ImageFont.truetype(font_path, size)
+                except OSError:
+                    return ImageFont.load_default()
 
     def generate_thumbnail(self, audit: Dict[str, Any]) -> str:
         """
