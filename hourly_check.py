@@ -184,6 +184,13 @@ def run_hourly_check():
             print(f"🖼️ Generating thumbnail for {audit.get('bill_id')}...")
             thumb_path = thumb_gen.generate_thumbnail(audit)
             
+            # CRITICAL FIX: The Gemini CoVe prompt hallucinates "example.com" for the 
+            # thumbnail_url. We must overwrite it with the actual local path we just generated.
+            filename = os.path.basename(thumb_path)
+            if "youtube_metadata" not in audit:
+                audit["youtube_metadata"] = {}
+            audit["youtube_metadata"]["thumbnail_url"] = f"/thumbnails/{filename}"
+            
             print(f"📧 Sending script email for {audit.get('bill_id')}...")
             delivery.deliver_short_script(audit, TARGET_EMAIL, thumbnail_path=thumb_path)
 
