@@ -284,6 +284,10 @@ class FinancialAuditor:
         for key, value in creative_fields.items():
             verified_data[key] = value
             
+        # Secure the raw API sponsor name to bypass AI contact formatting hallucinations
+        if sponsor_name:
+            verified_data["raw_api_sponsor"] = sponsor_name
+            
         return verified_data
 
     def generate_daily_summary_script(self, audits: List[Dict[str, Any]]) -> tuple[Dict[str, Any], str]:

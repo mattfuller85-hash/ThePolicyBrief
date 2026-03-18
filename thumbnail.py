@@ -110,10 +110,14 @@ class ThumbnailGenerator:
         )
         
         # Draw Sponsor info
-        sponsor_name = audit.get("sponsor_contact_info", {}).get("sponsor_name", "UNKNOWN SPONSOR")
+        # Prefer the raw string pulled directly from the Congress API if available (bypasses AI hallucination)
+        sponsor_name = audit.get("raw_api_sponsor")
+        if not sponsor_name:
+            sponsor_name = audit.get("sponsor_contact_info", {}).get("sponsor_name", "UNKNOWN SPONSOR")
+            
         draw.text(
             (80, 900), 
-            f"SPONSOR: {sponsor_name}".upper(), 
+            f"SPONSOR: {sponsor_name[:35] + '...' if len(sponsor_name) > 35 else sponsor_name}".upper(), 
             font=font_sponsor, 
             fill=sub_text_color
         )
