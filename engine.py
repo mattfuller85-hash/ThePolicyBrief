@@ -174,7 +174,8 @@ class FinancialAuditor:
     """The Investigative Radar: V7 Standard for zero-hallucination financial auditing."""
     
     def __init__(self, api_key: str):
-        self.api_keys = [k.strip() for k in api_key.split(",") if k.strip()]
+        import re
+        self.api_keys = [k.strip() for k in re.split(r'[,\n]+', api_key) if k.strip()]
         self.current_key_index = 0
         try:
             from google import genai
