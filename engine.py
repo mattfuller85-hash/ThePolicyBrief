@@ -228,14 +228,15 @@ class FinancialAuditor:
             except Exception as e:
                 error_str = str(e)
                 if '429' in error_str or 'RESOURCE_EXHAUSTED' in error_str:
-                    # Check if it is the hard daily limit specifically (20 or 0 requests)
+                    # Always try to rotate to a fresh backup key to bypass limits completely
+                    if self._rotate_key():
+                        continue
+                        
+                    # If we are completely out of backup keys, check if it's a permanent daily block
                     if 'generate_content_free_tier_requests, limit: 20' in error_str or 'generate_content_free_tier_requests, limit: 0' in error_str:
-                        if self._rotate_key():
-                            continue # Immediately retry with the new rotated key
-                        else:
-                            raise e # All keys are physically exhausted
+                        raise e # All keys are physically exhausted for the day
                     
-                    # Otherwise, it's a standard per-minute RPM rate limit, so pause and retry
+                    # Otherwise, it's a standard per-minute RPM rate limit on our last valid key, so pause and retry
                     if attempt < max_total_attempts - 1:
                         wait_time = 15.0 # Default wait
                         
@@ -250,7 +251,7 @@ class FinancialAuditor:
                             if match_s:
                                 wait_time = float(match_s.group(1)) + 2.0
                         
-                        print(f"⚠️ API RPM Rate Limit Hit! Pausing {wait_time:.1f}s before retry ({attempt+1})...")
+                        print(f"⚠️ API RPM Rate Limit Hit (NO BACKUP KEYS LEFT)! Pausing {wait_time:.1f}s before retry ({attempt+1})...")
                         time.sleep(wait_time)
                         continue
                 raise e
